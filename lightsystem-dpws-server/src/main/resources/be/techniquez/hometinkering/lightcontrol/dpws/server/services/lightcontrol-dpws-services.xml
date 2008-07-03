@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+    
+    <!-- Services -->
+	<bean name="lightControlDPWSService" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.control.LightControlService">
+		<constructor-arg index="0" value="http://www.techniquez.be/hometinkering/lightcontrol/dpws/service/control"/>
+		<constructor-arg index="1" value="LightControlService"/>
+		<constructor-arg index="2" ref="repository"/>
+	</bean>
+	
+	<bean name="lightSystemConfigurationDPWSService" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.configuration.LightSystemConfigurationService">
+		<constructor-arg index="0" value="http://www.techniquez.be/hometinkering/lightcontrol/dpws/service/configuration"/>
+		<constructor-arg index="1" value="ConfigurationService"/>
+		<constructor-arg index="2" ref="repository"/>
+	</bean>
+	
+	<!-- Evented actions.-->
+	<bean name="digitalLightStatusChangedEvent" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.control.DigitalLightStatusChangedEvent">
+		<constructor-arg ref="lightControlDPWSService"/>
+	</bean>
+	
+	<bean name="dimmerLightStatusEvent" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.control.DimmerLightStatusChangedEvent">
+		<constructor-arg ref="lightControlDPWSService"/>
+	</bean>
+	
+		<!-- Configutaration actions. -->
+	<bean name="getCurrentConfigurationAction" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.configuration.GetCurrentConfigurationAction">
+		<constructor-arg ref="lightSystemConfigurationDPWSService"/>
+		<constructor-arg ref="repository"/>
+	</bean>
+</beans>
