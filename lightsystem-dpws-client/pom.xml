@@ -5,10 +5,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+	
+	<parent>
+    	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+    	<artifactId>clients</artifactId>
+    	<version>0.1</version>
+  	</parent>
+  	
 	<artifactId>dpws-client</artifactId>
-	<version>0.1.0</version>
-	<name>LightControl-DPWS-Client</name>
+	<name>dpws-client</name>
 
 	<repositories>
 		<repository>
@@ -80,7 +85,7 @@
 		<dependency>
 			<groupId>org.ws4d.dpws</groupId>
 			<artifactId>dpws_stack_se</artifactId>
-			<version>0.9beta</version>
+			<version>0.9</version>
 		</dependency>
 	</dependencies>
 </project>
