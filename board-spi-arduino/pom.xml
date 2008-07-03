@@ -5,10 +5,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>be.techniquez.hometinkering.lightcontrol.spi</groupId>
-	<artifactId>arduino</artifactId>
-	<version>0.1.0</version>
-	<name>ControlBoardArduino</name>
+	
+	<parent>
+    	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+    	<artifactId>server</artifactId>
+    	<version>0.1</version>
+  	</parent>
+
+	<artifactId>board-spi-arduino</artifactId>
+	<name>board-driver-arduino</name>
 
 	<repositories>
 		<repository>
@@ -28,18 +33,17 @@
 	</repositories>
 
 	<dependencies>
-		<!-- We implement the SPI. -->
-		<dependency>
-			<groupId>be.techniquez.hometinkering.lightcontrol.controlboard</groupId>
-			<artifactId>spi</artifactId>
-			<version>0.1.0</version>
-		</dependency>
-
 		<!-- We need serial communication with our boards. -->
 		<dependency>
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
 			<version>2.1.7</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+			<artifactId>board-spi</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
