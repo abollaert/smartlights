@@ -9,10 +9,10 @@
 	<name>lightsystem-server</name>
 	
 	<modules>
-		<module>../board-spi-api</module>
+		<module>../board-spi</module>
 		<module>../board-spi-arduino</module>
 		<module>../board-spi-simulated</module>
-		<module>../lightsystem-services</module>
-		<module>../lightsystem-dpws-server</module>
+		<module>../server-services</module>
+		<module>../dpws-server</module>
 	</modules>
 </project>
