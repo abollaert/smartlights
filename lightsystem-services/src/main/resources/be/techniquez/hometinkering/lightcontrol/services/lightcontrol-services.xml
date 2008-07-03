@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import resource="classpath:/be/techniquez/hometinkering/lightcontrol/db/lightcontrol-db.xml"/>
+    
+    <bean id="repository" class="be.techniquez.hometinkering.lightcontrol.services.impl.RepositoryServiceImpl">
+    	<constructor-arg>
+    		<ref bean="driverDAO"/>
+    	</constructor-arg>
+    	
+    	<constructor-arg>
+    		<ref bean="lightDAO"/>
+    	</constructor-arg>
+    	
+    	<constructor-arg>
+    		<ref bean="boardDAO"/>
+    	</constructor-arg>
+    </bean>
+</beans>
