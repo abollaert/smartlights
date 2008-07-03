@@ -41,6 +41,7 @@ public final class DriverDAOSpringJDBCImpl implements DriverDAO {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public final Set<String> getInstalledDrivers() {
 		final Set<String> installedDrivers = new HashSet<String>();
 		
