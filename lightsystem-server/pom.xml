@@ -16,7 +16,7 @@
 		<module>../board-spi-api</module>
 		<module>../board-spi-arduino</module>
 		<module>../board-spi-simulated</module>
-		<module>../server-services</module>
-		<module>../dpws-server</module>
+		<module>../lightsystem-services</module>
+		<module>../lightsystem-dpws-server</module>
 	</modules>
 </project>
