@@ -11,6 +11,10 @@
     	<artifactId>server</artifactId>
     	<version>0.1</version>
   	</parent>
+  	
+  	<scm>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/board-spi-arduino</connection>
+	</scm>
 
 	<artifactId>board-spi-arduino</artifactId>
 	<name>board-driver-arduino</name>

@@ -8,8 +8,12 @@
 	<packaging>pom</packaging>
 	<name>lightsystem-server</name>
 	
+	<scm>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-server</connection>
+	</scm>
+	
 	<modules>
-		<module>../board-spi</module>
+		<module>../board-spi-api</module>
 		<module>../board-spi-arduino</module>
 		<module>../board-spi-simulated</module>
 		<module>../server-services</module>
