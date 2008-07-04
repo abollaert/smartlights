@@ -15,6 +15,10 @@
 	<artifactId>dpws-server</artifactId>
 	<name>dpws-server</name>
 
+	<scm>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-dpws-server</connection>
+	</scm>
+	
 	<repositories>
 		<repository>
 			<id>Maven main repo</id>
