@@ -9,7 +9,7 @@
 	<name>lightsystem-server</name>
 	
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-server</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server</connection>
 	</scm>
 	
 	<modules>

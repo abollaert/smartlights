@@ -16,6 +16,10 @@
 	
 	<name>server-services</name>
 
+	<scm>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-services</connection>
+	</scm>
+	
 	<repositories>
 		<repository>
 			<id>Maven main repo</id>

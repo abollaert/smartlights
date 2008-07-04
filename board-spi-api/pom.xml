@@ -16,7 +16,7 @@
 	<name>board-driver-api</name>
 
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/board-spi-api</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/board-spi-api</connection>
 	</scm>
 	
 	<repositories>
