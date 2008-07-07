@@ -17,7 +17,7 @@
 	</scm>
 
 	<artifactId>board-spi-arduino</artifactId>
-	<name>board-driver-arduino</name>
+	<name>board-spi-arduino</name>
 
 	<repositories>
 		<repository>
@@ -46,7 +46,7 @@
 		
 		<dependency>
 			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-			<artifactId>board-spi</artifactId>
+			<artifactId>board-spi-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

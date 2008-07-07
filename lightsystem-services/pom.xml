@@ -12,9 +12,9 @@
     	<version>0.1</version>
   	</parent>
   	
-	<artifactId>server-services</artifactId>
+	<artifactId>lightsystem-services</artifactId>
 	
-	<name>server-services</name>
+	<name>lightsystem-services</name>
 
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-services</connection>
@@ -88,7 +88,19 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-			<artifactId>board-spi</artifactId>
+			<artifactId>board-spi-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+			<artifactId>board-spi-arduino</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+			<artifactId>board-spi-simulated</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

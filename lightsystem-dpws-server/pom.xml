@@ -12,8 +12,8 @@
     	<version>0.1</version>
   	</parent>
   	
-	<artifactId>dpws-server</artifactId>
-	<name>dpws-server</name>
+	<artifactId>lightsystem-dpws-server</artifactId>
+	<name>lightsystem-dpws-server</name>
 
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-dpws-server</connection>
@@ -94,7 +94,7 @@
 		
 		<dependency>
 			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-			<artifactId>server-services</artifactId>
+			<artifactId>lightsystem-services</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

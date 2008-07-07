@@ -84,7 +84,7 @@
 		<!-- DPWS stack. -->
 		<dependency>
 			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-			<artifactId>dpws-client</artifactId>
+			<artifactId>lightsystem-dpws-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

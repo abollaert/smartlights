@@ -12,8 +12,8 @@
     	<version>0.1</version>
   	</parent>
   	
-	<artifactId>dpws-client</artifactId>
-	<name>dpws-client</name>
+	<artifactId>lightsystem-dpws-client</artifactId>
+	<name>lightsystem-dpws-client</name>
 
 	<repositories>
 		<repository>

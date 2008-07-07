@@ -11,7 +11,7 @@
 	
 	<artifactId>board-spi-simulated</artifactId>
 	
-	<name>board-driver-simulated</name>
+	<name>board-spi-simulated</name>
 	
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/board-spi-simulated</connection>
@@ -34,7 +34,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-			<artifactId>board-spi</artifactId>
+			<artifactId>board-spi-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

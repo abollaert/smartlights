@@ -12,8 +12,8 @@
     	<version>0.1</version>
   	</parent>
 	
-	<artifactId>board-spi</artifactId>
-	<name>board-driver-api</name>
+	<artifactId>board-spi-api</artifactId>
+	<name>board-spi-api</name>
 
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/board-spi-api</connection>
