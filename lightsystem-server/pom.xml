@@ -2,16 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-	<version>0.1</version>
-	<artifactId>server</artifactId>
+	<parent>
+		<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
+		<artifactId>all</artifactId>
+		<version>0.1</version>
+	</parent>
+	<artifactId>lightsystem-server</artifactId>
 	<packaging>pom</packaging>
 	<name>lightsystem-server</name>
-	
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server</connection>
 	</scm>
-	
 	<modules>
 		<module>../board-spi-api</module>
 		<module>../board-spi-arduino</module>
@@ -19,4 +20,21 @@
 		<module>../lightsystem-services</module>
 		<module>../lightsystem-dpws-server</module>
 	</modules>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>assembly.xml</descriptor>
+					</descriptors>
+					<archive>
+						<manifest>
+							<mainClass>be.techniquez.hometinkering.lightcontrol.dpws.server.Server</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
