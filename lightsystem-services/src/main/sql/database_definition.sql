@@ -35,7 +35,6 @@ create table lights
 -- First we need a way to generate errors from triggers and such. We need this to ensure data integrity.
 -- For this we use the UDF method as suggested on http://rpbouman.blogspot.com/2005/11/using-udf-to-raise-errors-from-inside.html
 -- The shared lib needs to be in /usr/lib for this to work.
-drop function raise_error;
 create function raise_error returns int soname 'libmysql_raise_error.so';
 
 -- Also create an on insert trigger on lights making sure that no light gets inserted on the wrong channel number.
