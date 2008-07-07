@@ -135,6 +135,13 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 
 			rootParameter.setValue(pathToBoardID, String.valueOf(boardId));
 			rootParameter.setValue(pathToBoardType, "DIMMER");
+			pathToBoardDriverName[0].setIndex(boardIndex);
+			pathToBoardDriverName[1].setIndex(0);
+			rootParameter.setValue(pathToBoardDriverName, this.getRepository().getDriverNameForBoard(boardId));
+			
+			pathToBoardNumberOfChannels[0].setIndex(boardIndex);
+			pathToBoardNumberOfChannels[1].setIndex(0);
+			rootParameter.setValue(pathToBoardNumberOfChannels, String.valueOf(this.getRepository().getNumberOfChannelsOnBoard(boardId)));
 			
 			int channelIndex = 0;
 
@@ -165,7 +172,7 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 
 			boardIndex++;
 		}
-
+		
 		logger.info("Done, invocation was successful.");
 	}
 

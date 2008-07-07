@@ -15,7 +15,6 @@ import org.ws4d.java.discovery.SearchParameter;
 import org.ws4d.java.service.AbstractAction;
 import org.ws4d.java.service.PVI;
 import org.ws4d.java.service.Parameter;
-import org.ws4d.java.service.remote.IRemoteDevice;
 import org.ws4d.java.service.remote.IRemoteService;
 import org.ws4d.java.util.Properties;
 import org.ws4d.java.xml.QualifiedName;
@@ -62,9 +61,6 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 	
 	/** Set containing the DPWS client listeners. */
 	private final Set<DPWSClientListener> listeners = new HashSet<DPWSClientListener>();
-	
-	/** Indicates whether this client is fully initialized or not. */
-	private boolean initialized;
 	
 	public DPWSClientImpl() {
 		logger.info("Starting DPWS discovery process to discover light systems on the network...");
@@ -115,7 +111,7 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 	private final void loadBoards() throws DPWSException {
 		logger.info("Loading the boards...");
 		
-		final AbstractAction getConfigurationAction = this.configurationService.getAction("GetCurrentConfiguration", "ConfigurationService");
+		final AbstractAction getConfigurationAction = this.configurationService.getAction(GET_CONFIGURATION_ACTION_NAME, "ConfigurationService");
 		
 		logger.info("Asking the device for it's configuration...");
 		
@@ -171,9 +167,11 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 			final String boardType = response.getValue(pathToBoardType).toString();
 			final int numberOfChannels = Integer.valueOf(response.getValue(pathToNumberOfChannels).toString());
 			
+			System.out.println(boardType);
 			if (boardType.equals("DIGITAL")) {
 				final DigitalBoard board = new DigitalBoard(String.valueOf(boardId), null, boardDriverName);
 			
+				System.out.println(numberOfChannels);
 				for (int j = 0; j < numberOfChannels; j++) {
 					pathToChannelNumber[0].setIndex(i);
 					pathToChannelNumber[1].setIndex(j);

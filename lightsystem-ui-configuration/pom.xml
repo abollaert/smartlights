@@ -87,5 +87,11 @@
 			<artifactId>lightsystem-dpws-client</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.netbeans</groupId>
+			<artifactId>wizard</artifactId>
+			<version>0.998.1</version>
+		</dependency>
 	</dependencies>
 </project>
