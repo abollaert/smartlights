@@ -42,7 +42,6 @@ public final class DigitalBoardPanel extends JPanel {
 		this.setLayout(new BorderLayout());
 		this.board = board;
 		
-		
 		this.add(this.createBoardInformationPanel(), BorderLayout.NORTH);
 		this.add(this.createChannelPanel(), BorderLayout.CENTER);
 	}
@@ -138,6 +137,10 @@ public final class DigitalBoardPanel extends JPanel {
 			constraints.weightx = 0.5;
 			constraints.gridx = 1;
 			channelPanel.add(lightNameTextField, constraints);
+			
+			if (this.board.getChannels().get(channelNumber) != null && !this.board.getChannels().get(channelNumber).equals("NONE")) {
+				lightNameTextField.setText(this.board.getChannels().get(channelNumber));
+			}
 			
 			constraints.weightx = 0.5;
 			constraints.gridx = 2;

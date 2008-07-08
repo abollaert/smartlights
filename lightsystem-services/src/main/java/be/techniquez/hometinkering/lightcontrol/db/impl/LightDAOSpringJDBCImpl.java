@@ -8,7 +8,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
 import be.techniquez.hometinkering.lightcontrol.db.LightDAO;
@@ -94,4 +96,38 @@ public final class LightDAOSpringJDBCImpl implements LightDAO {
 		return dimmerLights;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public final void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription) {
+		if (this.lightExists(boardId, channelNumber)) {
+			this.jdbcTemplate.update("update lights set id = ?, description = ? where board_id = ? and channel_number = ?", new Object[] { lightName, lightDescription, boardId, channelNumber });
+		} else {
+			this.jdbcTemplate.update("insert into lights (id, board_id, channel_number, description) values (?, ?, ?, ?)", new Object[] { lightName, boardId, channelNumber, lightDescription });
+		}
+	}
+	
+	/**
+	 * Checks if the light is known in the database, retuens true if it does, false if not.
+	 * 
+	 * @param 	boardId				The ID of the board.
+	 * @param 	channelNumber		The channel number.
+	 * 
+	 * @return	True if the light exists, false if not.
+	 */
+	private final boolean lightExists(final int boardId, final int channelNumber) {
+		return (Boolean)this.jdbcTemplate.query("select count(id) from lights where board_id = ? and channel_number = ?", new Object[] { boardId, channelNumber }, new ResultSetExtractor() {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			public final Object extractData(final ResultSet rs) throws SQLException, DataAccessException {
+				if (rs.next()) {
+					return rs.getInt(1) == 0 ? false : true;
+				}
+				
+				return false;
+			}
+		});
+	}
 }

@@ -648,4 +648,17 @@ public final class RepositoryServiceImpl implements RepositoryService,
 		
 		return -1;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public final void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription) {
+		logger.info("Updating channel [" + channelNumber + "] on board [" + boardId + "] as light with name [" + lightName + "], description [" + lightDescription + "]");
+		
+		this.lightDAO.updateChannel(boardId, channelNumber, lightName, lightDescription);
+		
+		logger.info("Update done...");
+		
+		// FIXME: Update me here...
+	}
 }

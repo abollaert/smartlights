@@ -3,8 +3,6 @@ package be.techniquez.hometinkering.lightcontrol.ui.configuration.swing;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -15,12 +13,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import org.netbeans.api.wizard.WizardDisplayer;
-import org.netbeans.spi.wizard.Wizard;
-import org.netbeans.spi.wizard.WizardPage;
 import org.ws4d.java.communication.DPWSException;
 
 import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClient;
@@ -28,7 +22,6 @@ import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClientListener;
 import be.techniquez.hometinkering.lightcontrol.dpws.client.impl.DPWSClientImpl;
 import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DigitalBoard;
 import be.techniquez.hometinkering.lightcontrol.ui.configuration.swing.components.panel.DigitalBoardPanel;
-import be.techniquez.hometinkering.lightcontrol.ui.configuration.swing.wizard.configuration.ConfigurationWizardPage1;
 
 /**
  * Configuration UI main class, starts up the application.
@@ -55,8 +48,9 @@ public final class ConfigurationUI extends JFrame {
 	private ConfigurationUI() {
 		this.setLayout(new BorderLayout());
 		
+		System.out.println("Adding tabbedPane");
 		this.getContentPane().add(this.tabbedPane, BorderLayout.CENTER);
-		
+		System.out.println("Done");
 		this.statusLabel = new JLabel("");
 		this.getContentPane().add(this.statusLabel, BorderLayout.SOUTH);
 		
@@ -111,9 +105,13 @@ public final class ConfigurationUI extends JFrame {
 			this.client.reload();
 			this.tabbedPane.removeAll();
 			
+			System.out.println("DPWS client contains " + this.client.getDigitalBoards().size() + " boards.");
 			for (final DigitalBoard board : this.client.getDigitalBoards()) {
+				System.out.println("Adding tab...");
 				this.tabbedPane.addTab("Digital board [" + board.getId() + "]", new DigitalBoardPanel(board));
 			}
+			
+			System.out.println("Update component tree...");
 			
 			SwingUtilities.updateComponentTreeUI(this);
 		} catch (DPWSException e) {

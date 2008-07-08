@@ -32,4 +32,9 @@
 		<constructor-arg ref="lightSystemConfigurationDPWSService"/>
 		<constructor-arg ref="repository"/>
 	</bean>
+	
+	<bean name="updateChannel" class="be.techniquez.hometinkering.lightcontrol.dpws.server.services.configuration.UpdateChannelAction">
+		<constructor-arg ref="lightSystemConfigurationDPWSService"/>
+		<constructor-arg ref="repository"/>
+	</bean>
 </beans>

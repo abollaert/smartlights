@@ -174,6 +174,7 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 		final int numberOfBoards = Integer.valueOf(response.getValue(
 				pathToNumberOfBoards).toString());
 
+		System.out.println("We have " + numberOfBoards + " boards...");
 		for (int i = 0; i < numberOfBoards; i++) {
 			// Process the current board...
 			// Set the indices on board information PVIs...
@@ -192,7 +193,9 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 			final int numberOfChannels = Integer.valueOf(response.getValue(
 					pathToNumberOfChannels).toString());
 
+			System.out.println("Type is " + boardType);
 			if (boardType.equals("DIGITAL")) {
+				System.out.println("Adding board...");
 				final DigitalBoard board = new DigitalBoard(String
 						.valueOf(boardId), null, boardDriverName);
 
@@ -215,8 +218,12 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 					} else {
 						board.setChannelOccupation(channelNumber, lightName);
 					}
+					
 				}
+				
+				this.digitalBoards.add(board);
 			} else if (boardType.equals("DIMMER")) {
+				System.out.println("Adding board...");
 				final DimmerBoard board = new DimmerBoard(String
 						.valueOf(boardId), null, boardDriverName);
 

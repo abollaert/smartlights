@@ -25,4 +25,14 @@ public interface LightDAO {
 	 * @return	The configured dimmer lights.
 	 */
 	Map<String, DimmerLight> getConfiguredDimmerLights();
+	
+	/**
+	 * Update the given channel with the given light info.
+	 * 
+	 * @param 	boardId				The ID of the board.
+	 * @param 	channelNumber		The channel number.
+	 * @param 	lightName			The name of the light.
+	 * @param 	lightDescription	The description of the light.
+	 */
+	void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription);
 }

@@ -120,4 +120,14 @@ public interface RepositoryService {
 	 * @return	The number of channels held on the board, -1 if not found.
 	 */
 	int getNumberOfChannelsOnBoard(final int boardId);
+	
+	/**
+	 * Updates the channel with given number on the given board with the given information.
+	 * 
+	 * @param 	boardId				The ID of the board.
+	 * @param 	channelNumber		The channel number.
+	 * @param 	lightName			The name of the light.
+	 * @param 	lightDescription	The description of the light.
+	 */
+	void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription);
 }
