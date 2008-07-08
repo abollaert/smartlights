@@ -40,4 +40,16 @@ public interface DPWSClient {
 	 * system.
 	 */
 	void reload() throws DPWSException;
+	
+	/**
+	 * Updates the light information for the given channel on the given board.
+	 * 
+	 * @param 	boardId				The ID of the board for which to update the information.
+	 * @param 	channelNumber		The channel number on the board.
+	 * @param 	lightName			The name of the light. 
+	 * @param 	lightDescription	The description of the light.
+	 * 
+	 * @throws 	DPWSException		If a DPWS error occurs during the update.
+	 */
+	void updateLightInformation(final int boardId, final int channelNumber, final String lightName, final String lightDescription) throws DPWSException;
 }
