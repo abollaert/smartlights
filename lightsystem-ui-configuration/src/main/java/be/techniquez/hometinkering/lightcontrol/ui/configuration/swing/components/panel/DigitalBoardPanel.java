@@ -3,11 +3,8 @@ package be.techniquez.hometinkering.lightcontrol.ui.configuration.swing.componen
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.awt.font.TextAttribute;
-import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -16,14 +13,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-
-import com.sun.rowset.internal.InsertRow;
 
 import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DigitalBoard;
+import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DigitalChannel;
 
 /**
  * Digital board panel. This one holds one digital board.
@@ -139,7 +132,8 @@ public final class DigitalBoardPanel extends JPanel {
 			channelPanel.add(lightNameTextField, constraints);
 			
 			if (this.board.getChannels().get(channelNumber) != null && !this.board.getChannels().get(channelNumber).equals("NONE")) {
-				lightNameTextField.setText(this.board.getChannels().get(channelNumber));
+				lightNameTextField.setText(this.board.getChannels().get(channelNumber).getName());
+				lightDescriptionTextField.setText(this.board.getChannels().get(channelNumber).getDescription());
 			}
 			
 			constraints.weightx = 0.5;
@@ -239,6 +233,20 @@ public final class DigitalBoardPanel extends JPanel {
 		}
 
 		public final void actionPerformed(final ActionEvent e) {
+			DigitalChannel channel = null;
+			
+			if (board.getChannels().get(this.getChannelNumber()) == null) {
+				channel = new DigitalChannel(board, this.getChannelNumber());
+				board.getChannels().put(this.getChannelNumber(), channel);
+			}
+			
+			channel = board.getChannels().get(this.getChannelNumber());
+			
+			channel.setName(this.getChannelNameText().getText());
+			board.getChannels().get(this.getChannelNumber()).setDescription(this.getChannelDescriptionText().getText());
+			
+			channel.updateMetadata();
+			
 			this.setEditEnabled(false);
 		}
 	}
@@ -253,7 +261,11 @@ public final class DigitalBoardPanel extends JPanel {
 		}
 
 		public final void actionPerformed(final ActionEvent e) {
-			this.getChannelNameText().setText(board.getChannels().get(this.getChannelNumber()));
+			final String channelName = board.getChannels().get(this.getChannelNumber()).getName();
+			final String channelDescription = board.getChannels().get(this.getChannelNumber()).getDescription();
+			
+			this.getChannelNameText().setText(channelName);
+			this.getChannelDescriptionText().setText(channelDescription);
 			
 			setEditEnabled(false);
 		}
@@ -272,34 +284,5 @@ public final class DigitalBoardPanel extends JPanel {
 		public final void actionPerformed(final ActionEvent e) {
 			setEditEnabled(true);
 		}
-	}
-	
-	private final class ChannelValueChangedListener implements DocumentListener {
-		
-		private final JButton saveButton;
-		
-		private final JButton cancelButton;
-		
-		private ChannelValueChangedListener(final JButton saveButton, final JButton cancelButton) {
-			this.cancelButton = cancelButton;
-			this.saveButton = saveButton;
-		}
-
-		/**
-		 */
-		public final void changedUpdate(final DocumentEvent e) {
-		}
-
-		public final void insertUpdate(final DocumentEvent e) {
-			this.saveButton.setEnabled(true);
-			this.cancelButton.setEnabled(true);
-			
-		}
-
-		public final void removeUpdate(final DocumentEvent e) {
-			this.saveButton.setEnabled(true);
-			this.cancelButton.setEnabled(true);
-		}
-		
 	}
 }

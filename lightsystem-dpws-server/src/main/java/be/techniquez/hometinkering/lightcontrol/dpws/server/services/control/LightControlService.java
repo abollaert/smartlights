@@ -1,7 +1,5 @@
 package be.techniquez.hometinkering.lightcontrol.dpws.server.services.control;
 
-import java.util.logging.Logger;
-
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSService;
 import be.techniquez.hometinkering.lightcontrol.model.DigitalLight;
 import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
@@ -15,9 +13,6 @@ import be.techniquez.hometinkering.lightcontrol.services.RepositoryService;
  */
 public final class LightControlService extends AbstractDPWSService implements LightSystemEventListener {
 	
-	/** Logger instance used in this class. */
-	private static final Logger logger = Logger.getLogger(LightControlService.class.getName());
-	
 	/**
 	 * Creates a new light control service. This is done by spring.
 	 * 
@@ -28,30 +23,24 @@ public final class LightControlService extends AbstractDPWSService implements Li
 		super(namespace, porttype);
 		
 		// We are going to listen for events on the repo...
-		repository.addLightSystemEventListener(this);
+		repository.addListener(this);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final void digitalLightStatusChanged(final DigitalLight digitalLight) {
-		logger.info("Repository says digital light [" + digitalLight.getLightIdentifier() + "] has changed status, firing event...");
-		
 		final DigitalLightStatusChangedEvent event = (DigitalLightStatusChangedEvent)this.getAction(DigitalLightStatusChangedEvent.NAME);
+		System.out.println("Fire event...");
 		event.fire(digitalLight);
-		
-		logger.info("Done, event has been fired...");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final void dimmerLightStatusChanged(final DimmerLight dimmerLight) {
-		logger.info("Repository says dimmer light [" + dimmerLight.getLightIdentifier() + "] has changed status, firing event...");
-		
 		final DimmerLightStatusChangedEvent event = (DimmerLightStatusChangedEvent)this.getAction(DimmerLightStatusChangedEvent.NAME);
+		System.out.println("Fire event...");
 		event.fire(dimmerLight);
-		
-		logger.info("Done, event has been fired...");
 	}
 }

@@ -5,7 +5,7 @@ package be.techniquez.hometinkering.lightcontrol.dpws.client.model;
  * 
  * @author alex
  */
-public final class DimmerChannel extends Channel {
+public final class DimmerChannel extends Channel<DimmerBoard> {
 
 	/**
 	 * Creates a new dimmer channel.
@@ -13,9 +13,35 @@ public final class DimmerChannel extends Channel {
 	 * @param 	board			The board.
 	 * @param 	channelNumber	The channel number.
 	 */
-	DimmerChannel(final DimmerBoard board, final int channelNumber) {
+	public DimmerChannel(final DimmerBoard board, final int channelNumber) {
 		super(board, channelNumber);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * @return the dimPercentage
+	 */
+	public final int getDimPercentage() {
+		return this.getBoard().getDPWSClient().getDimmerPercentage(this);
+	}
+
+	/**
+	 * @param dimPercentage the dimPercentage to set
+	 */
+	public final void setDimPercentage(int dimPercentage) {
+		this.getBoard().getDPWSClient().changeDimmerPercentage(this);
+	}
+
+	/**
+	 * @return the on
+	 */
+	public final boolean isOn() {
+		return this.getBoard().getDPWSClient().isOn(this);
+	}
+
+	/**
+	 * @param on the on to set
+	 */
+	public final void switchLight(boolean on) {
+		this.getBoard().getDPWSClient().switchLight(this, on);
+	}
 }

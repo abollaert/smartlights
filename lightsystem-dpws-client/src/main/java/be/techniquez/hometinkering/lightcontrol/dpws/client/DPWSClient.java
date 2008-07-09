@@ -5,6 +5,8 @@ import java.util.List;
 import org.ws4d.java.communication.DPWSException;
 
 import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DigitalBoard;
+import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DigitalChannel;
+import be.techniquez.hometinkering.lightcontrol.dpws.client.model.DimmerChannel;
 
 /**
  * DPWS client interface specification.
@@ -52,4 +54,54 @@ public interface DPWSClient {
 	 * @throws 	DPWSException		If a DPWS error occurs during the update.
 	 */
 	void updateLightInformation(final int boardId, final int channelNumber, final String lightName, final String lightDescription) throws DPWSException;
+	
+	/**
+	 * Switches the light on or off.
+	 * 
+	 * @param 	light		The light to switch on or off.
+	 * @param	on			True if the light should be on, false if it should be off.
+	 */
+	void switchLight(final DimmerChannel light, final boolean on);
+	
+	/**
+	 * Switches the light on or off.
+	 * 
+	 * @param 	light		The light to switch on or off.
+	 * @param	on			True if the light should be on, false if it should be off.
+	 */
+	void switchLightOff(final DigitalChannel light, final boolean on);
+	
+	/**
+	 * Sets the dimmer percentage.
+	 * 
+	 * @param 	light		The light to set the percentage of.
+	 */
+	void changeDimmerPercentage(final DimmerChannel light);
+	
+	/**
+	 * Gets the dimmer percentage for the given dimmer channel.
+	 * 
+	 * @param 	dimmerChannel	The dimmer channel to get the percentage of.
+	 * 
+	 * @return	The percentage the dimmer channel is set to.
+	 */
+	int getDimmerPercentage(final DimmerChannel dimmerChannel);
+	
+	/**
+	 * Returns true if the given channel is on, false if not.
+	 * 
+	 * @param 	channel		The channel to return the status of.
+	 * 
+	 * @return	True if the channel is on, false if not.
+	 */
+	boolean isOn(final DigitalChannel channel);
+	
+	/**
+	 * Returns true if the given channel is on, false if not.
+	 * 
+	 * @param 	channel		The channel to return the status of.
+	 * 
+	 * @return	True if the channel is on, false if not.
+	 */
+	boolean isOn(final DimmerChannel channel);
 }

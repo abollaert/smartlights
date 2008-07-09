@@ -10,7 +10,8 @@ import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClient;
  * 
  * @author
  */
-public abstract class Board {
+@SuppressWarnings("unchecked")
+public abstract class Board<T extends Channel> {
 	
 	/** The DPWS client governing this board. */
 	private final DPWSClient client;
@@ -24,8 +25,8 @@ public abstract class Board {
 	/** The board driver name. */
 	private final String driverName;
 	
-	/** The channels. */
-	private final Map<Integer, String> channels = new HashMap<Integer, String>();
+	/** The channels of this board. */
+	private final Map<Integer, T> channels = new HashMap<Integer, T>();
 	
 	/**
 	 * Creates a new instance of the board.
@@ -48,8 +49,8 @@ public abstract class Board {
 	 * @param 	channelNumber		The channel number of the channel.
 	 * @param 	light				The name of the light that occupies the channel.
 	 */
-	public final void setChannelOccupation(final int channelNumber, final String light) {
-		this.channels.put(channelNumber, light);
+	public final void setChannelOccupation(final int channelNumber, final T channel) {
+		this.channels.put(channelNumber, channel);
 	}
 	
 	/**
@@ -66,7 +67,7 @@ public abstract class Board {
 	 * 
 	 * @return	The channels.
 	 */
-	public final Map<Integer, String> getChannels() {
+	public final Map<Integer, T> getChannels() {
 		return this.channels;
 	}
 

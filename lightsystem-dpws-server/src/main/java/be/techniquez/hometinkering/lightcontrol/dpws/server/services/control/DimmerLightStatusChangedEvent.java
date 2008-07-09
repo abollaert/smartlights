@@ -37,9 +37,9 @@ public final class DimmerLightStatusChangedEvent extends AbstractDPWSEvent {
 	 * @param 	dimmerLight		The light that caused the event to be fired.
 	 */
 	public final void fire(final DimmerLight dimmerLight) {
-		this.getOutputParameter("LightID").setValue(dimmerLight.getLightIdentifier());
+		this.getOutputParameter("LightID").setValue(dimmerLight.getName());
 		this.getOutputParameter("Status").setValue(String.valueOf(dimmerLight.isOn()));
-		this.getOutputParameter("DimPercentage").setValue(String.valueOf(dimmerLight.getPercentage()));
+		this.getOutputParameter("DimPercentage").setValue(String.valueOf(dimmerLight.getPercentageDimmed()));
 		
 		this.fire();
 	}

@@ -7,7 +7,7 @@ import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClient;
  * 
  * @author alex
  */
-public final class DigitalBoard extends Board {
+public final class DigitalBoard extends Board<DigitalChannel> {
 
 	
 	/**

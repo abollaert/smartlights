@@ -17,11 +17,7 @@
         <constructor-arg>
         	<ref bean="dataSource"/>
         </constructor-arg>
-    </bean>
-    
-    <bean id="boardDAO" class="be.techniquez.hometinkering.lightcontrol.db.impl.BoardDAOSpringJDBCImpl">
-    	<constructor-arg ref="dataSource"/>
-    </bean>
+	</bean>
 
     <!-- the DataSource (parameterized for configuration via a PropertyPlaceHolderConfigurer) -->
     <bean id="dataSource" destroy-method="close" class="org.apache.commons.dbcp.BasicDataSource">

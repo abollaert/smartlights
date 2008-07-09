@@ -2,20 +2,18 @@ package be.techniquez.hometinkering.lightcontrol.db.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.RowCallbackHandler;
 
 import be.techniquez.hometinkering.lightcontrol.db.LightDAO;
-import be.techniquez.hometinkering.lightcontrol.model.DigitalLight;
-import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
+import be.techniquez.hometinkering.lightcontrol.model.Board;
+import be.techniquez.hometinkering.lightcontrol.model.Light;
 
 /**
  * Spring JDBC template implementation of the light DAO interface.
@@ -24,6 +22,9 @@ import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
  *
  */
 public final class LightDAOSpringJDBCImpl implements LightDAO {
+	
+	/** Logger. */
+	private static final Logger logger = Logger.getLogger(LightDAOSpringJDBCImpl.class.getName());
 	
 	/** JDBC template that gets used for the database operations. */
 	private final JdbcTemplate jdbcTemplate;
@@ -36,78 +37,51 @@ public final class LightDAOSpringJDBCImpl implements LightDAO {
 	public LightDAOSpringJDBCImpl(final DataSource datasource) {
 		this.jdbcTemplate = new JdbcTemplate(datasource);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public final Map<String, DigitalLight> getConfiguredDigitalLights() {
-		final Map<String, DigitalLight> digitalLights = new HashMap<String, DigitalLight>();
+	public final Light addDatabaseInformation(final Light light) {
+		this.jdbcTemplate.query("select id, description from lights where board_id = ? and channel_number = ?", new Object[] { light.getBoard().getID(), light.getChannelNumber() },
+				new RowCallbackHandler() {
+					
+					/**
+					 * {@inheritDoc}
+					 */
+					public final void processRow(final ResultSet rs) throws SQLException {
+						light.setName(rs.getString("id"));
+						light.setDescription(rs.getString("description"));
+					}
+				}
+		);
 		
-		List<DigitalLight> lights = this.jdbcTemplate.query("select l.* from lights l where (select b.type from boards b where b.id = l.board_id) = 'DIGITAL'" , new RowMapper() {
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public final Object mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-				final String lightId = rs.getString("id");
-				final int index = rs.getInt("channel_number");
-				final int boardId = rs.getInt("board_id");
-				final String description = rs.getString("description");
-				
-				final DigitalLight light = new DigitalLight(lightId, index, boardId, description);
-				
-				return light;
-			}
-		});
-		
-		for (final DigitalLight light : lights) {
-			digitalLights.put(light.getLightIdentifier(), light);
-		}
-		
-		return digitalLights;
+		return light;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@SuppressWarnings("unchecked")
-	public final Map<String, DimmerLight> getConfiguredDimmerLights() {
-		final Map<String, DimmerLight> dimmerLights = new HashMap<String, DimmerLight>();
-		List<DimmerLight> lights = this.jdbcTemplate.query("select l.* from lights l where (select b.type from boards b where b.id = l.board_id) = 'DIMMER'" , new RowMapper() {
-
-			/**
-			 * {@inheritDoc}
-			 */
-			public final Object mapRow(final ResultSet rs, final int rowNum) throws SQLException {
-				final String lightId = rs.getString("id");
-				final int index = rs.getInt("channel_number");
-				final int boardId = rs.getInt("board_id");
-				final String description = rs.getString("description");
-				
-				final DimmerLight light = new DimmerLight(lightId, index, boardId, description);
-				
-				return light;
-			}
-		});
-		
-		for (final DimmerLight light : lights) {
-			dimmerLights.put(light.getLightIdentifier(), light);
+	public final void updateLight(final Light light) {
+		// Check if the board exists first and create if necessary...
+		if (!this.boardExists(light.getBoard())) {
+			logger.info("Board hosting the light does not have any info in the database yet, adding it automatically...");
+			
+			this.jdbcTemplate.update("insert into boards (id, type, number_of_channels) values (?, ?, ?)", new Object[] { light.getBoard().getID(), light.getBoard().getType().name(), light.getBoard().getNumberOfChannels() });
 		}
 		
-		return dimmerLights;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription) {
-		if (this.lightExists(boardId, channelNumber)) {
-			this.jdbcTemplate.update("update lights set id = ?, description = ? where board_id = ? and channel_number = ?", new Object[] { lightName, lightDescription, boardId, channelNumber });
+		if (this.lightExists(light)) {
+			logger.info("Light already known in the database, updating existing entry...");
+			
+			this.jdbcTemplate.update("update lights set id = ?, description = ? where board_id = ? and channel_number = ?", new Object[] { light.getName(), light.getDescription(), light.getBoard().getID(), light.getChannelNumber() });
 		} else {
-			this.jdbcTemplate.update("insert into lights (id, board_id, channel_number, description) values (?, ?, ?, ?)", new Object[] { lightName, boardId, channelNumber, lightDescription });
+			logger.info("Light not known in the database yet, creating new entry...");
+			
+			this.jdbcTemplate.update("insert into lights (id, board_id, channel_number, description) values (?, ?, ?, ?)", new Object[] { light.getName(), light.getBoard().getID(), light.getChannelNumber(), light.getDescription() });
 		}
 	}
+	
 	
 	/**
 	 * Checks if the light is known in the database, retuens true if it does, false if not.
@@ -117,8 +91,33 @@ public final class LightDAOSpringJDBCImpl implements LightDAO {
 	 * 
 	 * @return	True if the light exists, false if not.
 	 */
-	private final boolean lightExists(final int boardId, final int channelNumber) {
-		return (Boolean)this.jdbcTemplate.query("select count(id) from lights where board_id = ? and channel_number = ?", new Object[] { boardId, channelNumber }, new ResultSetExtractor() {
+	@SuppressWarnings("unchecked")
+	private final boolean lightExists(final Light light) {
+		return (Boolean)this.jdbcTemplate.query("select count(id) from lights where board_id = ? and channel_number = ?", new Object[] { light.getBoard().getID(), light.getChannelNumber() }, new ResultSetExtractor() {
+
+			/**
+			 * {@inheritDoc}
+			 */
+			public final Object extractData(final ResultSet rs) throws SQLException, DataAccessException {
+				if (rs.next()) {
+					return rs.getInt(1) == 0 ? false : true;
+				}
+				
+				return false;
+			}
+		});
+	}
+	
+	/**
+	 * Checks if the board is known in the database, retuens true if it does, false if not.
+	 * 
+	 * @param 	boardId				The ID of the board..
+	 * 
+	 * @return	True if the board exists, false if not.
+	 */
+	@SuppressWarnings("unchecked")
+	private final boolean boardExists(final Board board) {
+		return (Boolean)this.jdbcTemplate.query("select count(id) from boards where id = ?", new Object[] { board.getID() }, new ResultSetExtractor() {
 
 			/**
 			 * {@inheritDoc}

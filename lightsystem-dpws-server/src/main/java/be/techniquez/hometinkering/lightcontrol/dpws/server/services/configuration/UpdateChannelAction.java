@@ -7,6 +7,7 @@ import org.ws4d.java.service.ParameterType;
 
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSAction;
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSService;
+import be.techniquez.hometinkering.lightcontrol.model.Light;
 import be.techniquez.hometinkering.lightcontrol.services.RepositoryService;
 
 /**
@@ -44,6 +45,7 @@ public final class UpdateChannelAction extends AbstractDPWSAction {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public final void invoke() throws DPWSException {
 		final int boardId = Integer.valueOf(this.getInputParameter("boardId").getValue());
 		final int channelNumber = Integer.valueOf(this.getInputParameter("channelNumber").getValue());
@@ -52,7 +54,15 @@ public final class UpdateChannelAction extends AbstractDPWSAction {
 		
 		logger.info("Updating channel [" + channelNumber + "] of board [" + boardId + "] to light name [" + lightName + "], description [" + lightDescription + "]");
 		
-		this.getRepository().updateChannel(boardId, channelNumber, lightName, lightDescription);
+		final RepositoryService service = this.getRepository();
+		final Light light = service.getLight(boardId, channelNumber);
+		
+		if (light != null) {
+			light.setName(lightName);
+			light.setDescription(lightDescription);
+			
+			this.getRepository().saveLight(light);
+		}
 		
 		logger.info("Done, update finished...");
 	}

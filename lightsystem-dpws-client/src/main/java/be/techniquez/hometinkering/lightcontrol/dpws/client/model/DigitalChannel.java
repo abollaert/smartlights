@@ -6,7 +6,7 @@ package be.techniquez.hometinkering.lightcontrol.dpws.client.model;
  * @author alex
  *
  */
-public final class DigitalChannel extends Channel {
+public final class DigitalChannel extends Channel<DigitalBoard> {
 
 	/**
 	 * Creates a new digital channel. 
@@ -14,12 +14,7 @@ public final class DigitalChannel extends Channel {
 	 * @param 	board			The board.
 	 * @param 	channelNumber	The channel number.
 	 */
-	DigitalChannel(final DigitalBoard board, final int channelNumber) {
+	public DigitalChannel(final DigitalBoard board, final int channelNumber) {
 		super(board, channelNumber);
-		
-		this.board = board;
 	}
-
-	/** The board on which this channel resides. */
-	private final DigitalBoard board;
 }

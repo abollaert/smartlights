@@ -1,9 +1,6 @@
 package be.techniquez.hometinkering.lightcontrol.db;
 
-import java.util.Map;
-
-import be.techniquez.hometinkering.lightcontrol.model.DigitalLight;
-import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
+import be.techniquez.hometinkering.lightcontrol.model.Light;
 
 /**
  * DAO definition for the lights.
@@ -13,18 +10,14 @@ import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
 public interface LightDAO {
 	
 	/**
-	 * Gets the configured digital lights.
+	 * Adds the information from the database to the light, if applicable.
 	 * 
-	 * @return	The configured digital lights.
-	 */
-	Map<String, DigitalLight> getConfiguredDigitalLights();
-	
-	/**
-	 * Gets the configured dimmer lights.
+	 * @param 	light		The light to add information to.
 	 * 
-	 * @return	The configured dimmer lights.
+	 * @return	The light with added information from the database. The same light if nothing has been recorded in the database.
 	 */
-	Map<String, DimmerLight> getConfiguredDimmerLights();
+	@SuppressWarnings("unchecked")
+	Light addDatabaseInformation(final Light light);
 	
 	/**
 	 * Update the given channel with the given light info.
@@ -34,5 +27,6 @@ public interface LightDAO {
 	 * @param 	lightName			The name of the light.
 	 * @param 	lightDescription	The description of the light.
 	 */
-	void updateChannel(final int boardId, final int channelNumber, final String lightName, final String lightDescription);
+	@SuppressWarnings("unchecked")
+	void updateLight(final Light light);
 }

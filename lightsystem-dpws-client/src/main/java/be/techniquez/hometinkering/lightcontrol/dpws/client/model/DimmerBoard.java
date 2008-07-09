@@ -10,6 +10,7 @@ import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClient;
  * 
  * @author alex
  */
+@SuppressWarnings("unchecked")
 public final class DimmerBoard extends Board {
 
 	/**

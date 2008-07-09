@@ -1,7 +1,5 @@
 package be.techniquez.hometinkering.lightcontrol.dpws.server.services.configuration;
 
-import java.util.logging.Logger;
-
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSService;
 import be.techniquez.hometinkering.lightcontrol.services.RepositoryService;
 
@@ -14,12 +12,6 @@ import be.techniquez.hometinkering.lightcontrol.services.RepositoryService;
  */
 public final class LightSystemConfigurationService extends AbstractDPWSService {
 	
-	/** Logger instance that gets used in this class. */
-	private static final Logger logger = Logger.getLogger(LightSystemConfigurationService.class.getName());
-
-	/** The repository service. */
-	private final RepositoryService repository;
-	
 	/**
 	 * Creates a new instance of this class.
 	 * 
@@ -30,7 +22,5 @@ public final class LightSystemConfigurationService extends AbstractDPWSService {
 	 */
 	public LightSystemConfigurationService(final String namespace, final String porttype, final RepositoryService repo) {
 		super(namespace, porttype);
-		
-		this.repository = repo;
 	}
 }

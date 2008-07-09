@@ -1,6 +1,5 @@
 package be.techniquez.hometinkering.lightcontrol.dpws.server.services;
 
-import org.ws4d.java.eventing.EventManager;
 import org.ws4d.java.service.EventedAction;
 import org.ws4d.java.service.Parameter;
 import org.ws4d.java.service.ParameterType;

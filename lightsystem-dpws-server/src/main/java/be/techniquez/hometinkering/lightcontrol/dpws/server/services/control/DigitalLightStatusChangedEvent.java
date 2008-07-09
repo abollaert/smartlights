@@ -35,7 +35,7 @@ public final class DigitalLightStatusChangedEvent extends AbstractDPWSEvent {
 	 * @param digitalLight
 	 */
 	public final void fire(final DigitalLight digitalLight) {
-		this.getOutputParameter("LightID").setValue(digitalLight.getLightIdentifier());
+		this.getOutputParameter("LightID").setValue(digitalLight.getName());
 		this.getOutputParameter("Status").setValue(String.valueOf(digitalLight.isOn()));
 		
 		this.fire();

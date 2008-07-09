@@ -15,9 +15,5 @@
     	<constructor-arg>
     		<ref bean="lightDAO"/>
     	</constructor-arg>
-    	
-    	<constructor-arg>
-    		<ref bean="boardDAO"/>
-    	</constructor-arg>
     </bean>
 </beans>

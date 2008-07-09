@@ -1,6 +1,6 @@
 package be.techniquez.hometinkering.lightcontrol.dpws.server.services.configuration;
 
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.ws4d.java.communication.DPWSException;
@@ -10,8 +10,8 @@ import org.ws4d.java.service.ParameterType;
 
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSAction;
 import be.techniquez.hometinkering.lightcontrol.dpws.server.services.AbstractDPWSService;
-import be.techniquez.hometinkering.lightcontrol.model.DigitalLight;
-import be.techniquez.hometinkering.lightcontrol.model.DimmerLight;
+import be.techniquez.hometinkering.lightcontrol.model.Board;
+import be.techniquez.hometinkering.lightcontrol.model.Light;
 import be.techniquez.hometinkering.lightcontrol.services.RepositoryService;
 
 /**
@@ -49,15 +49,15 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 		service.addAction(this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public final void invoke() throws DPWSException {
-		logger
-				.info("First getting the configuration of the digital connected boards...");
+		logger.info("First getting the configuration of the digital connected boards...");
 
-		final Map<Integer, Map<Integer, DigitalLight>> digitalBoardConfiguration = this
-				.getRepository().getDigitalBoardsConfiguration();
-		final Map<Integer, Map<Integer, DimmerLight>> dimmerBoardConfiguration = this
-				.getRepository().getDimmerBoardsConfiguration();
+		final List<Board> allBoards = this.getRepository().allBoards();
 
 		logger.info("Setting up the response.");
 
@@ -76,24 +76,24 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 		int boardIndex = 0;
 		
 		pathToNumberOfBoards[0].setIndex(0);
-		rootParameter.setValue(pathToNumberOfBoards, String.valueOf(digitalBoardConfiguration.keySet().size() + dimmerBoardConfiguration.keySet().size()));
+		rootParameter.setValue(pathToNumberOfBoards, String.valueOf(allBoards.size()));
 		
-		for (final Integer boardId : digitalBoardConfiguration.keySet()) {
+		for (final Board board : allBoards) {
 			pathToBoardID[0].setIndex(boardIndex);
 			pathToBoardID[1].setIndex(0);
-			rootParameter.setValue(pathToBoardID, String.valueOf(boardId));
+			rootParameter.setValue(pathToBoardID, String.valueOf(board.getID()));
 			
 			pathToBoardType[0].setIndex(boardIndex);
 			pathToBoardType[1].setIndex(0);
-			rootParameter.setValue(pathToBoardType, "DIGITAL");
+			rootParameter.setValue(pathToBoardType, board.getType().name());
 			
 			pathToBoardDriverName[0].setIndex(boardIndex);
 			pathToBoardDriverName[1].setIndex(0);
-			rootParameter.setValue(pathToBoardDriverName, this.getRepository().getDriverNameForBoard(boardId));
+			rootParameter.setValue(pathToBoardDriverName, board.getDriverName());
 			
 			pathToBoardNumberOfChannels[0].setIndex(boardIndex);
 			pathToBoardNumberOfChannels[1].setIndex(0);
-			rootParameter.setValue(pathToBoardNumberOfChannels, String.valueOf(this.getRepository().getNumberOfChannelsOnBoard(boardId)));
+			rootParameter.setValue(pathToBoardNumberOfChannels, String.valueOf(board.getNumberOfChannels()));
 			
 			pathToChannelNumber[0].setIndex(boardIndex);
 			pathToLightName[0].setIndex(boardIndex);
@@ -101,10 +101,9 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 
 			int channelIndex = 0;
 
-			final Map<Integer, DigitalLight> channels = digitalBoardConfiguration
-					.get(boardId);
+			final List<Light> allLightsOnBoard = board.getAllLights();
 
-			for (final Integer channelNumber : channels.keySet()) {
+			for (final Light light : allLightsOnBoard) {
 				pathToChannelNumber[1].setIndex(channelIndex);
 				pathToChannelNumber[2].setIndex(channelIndex);
 				pathToLightName[1].setIndex(channelIndex);
@@ -113,74 +112,11 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 				pathToLightDescription[2].setIndex(channelIndex);
 
 				rootParameter.setValue(pathToChannelNumber, String
-						.valueOf(channelNumber));
+						.valueOf(light.getChannelNumber()));
 
-				String lightName = "NONE";
-				String lightDescription = "NONE";
-
-				if (channels.get(channelNumber) != null) {
-					lightName = channels.get(channelNumber)
-							.getLightIdentifier();
-					lightDescription = channels.get(channelNumber).getDescription();
-				}
-
-				rootParameter.setValue(pathToLightName, lightName);
-				rootParameter.setValue(pathToLightDescription, lightDescription);
+				rootParameter.setValue(pathToLightName, light.getName() == null ? "" : light.getName());
+				rootParameter.setValue(pathToLightDescription, light.getDescription() == null ? "" : light.getDescription());
 				
-				channelIndex++;
-			}
-
-			boardIndex++;
-		}
-		
-		for (final Integer boardId : dimmerBoardConfiguration.keySet()) {
-			pathToBoardID[0].setIndex(boardIndex);
-			pathToBoardID[1].setIndex(0);
-			pathToBoardType[0].setIndex(boardIndex);
-			pathToBoardType[1].setIndex(0);
-			pathToChannelNumber[0].setIndex(boardIndex);
-			pathToLightName[0].setIndex(boardIndex);
-			pathToLightDescription[0].setIndex(boardIndex);
-
-			rootParameter.setValue(pathToBoardID, String.valueOf(boardId));
-			rootParameter.setValue(pathToBoardType, "DIMMER");
-			pathToBoardDriverName[0].setIndex(boardIndex);
-			pathToBoardDriverName[1].setIndex(0);
-			rootParameter.setValue(pathToBoardDriverName, this.getRepository().getDriverNameForBoard(boardId));
-			
-			pathToBoardNumberOfChannels[0].setIndex(boardIndex);
-			pathToBoardNumberOfChannels[1].setIndex(0);
-			rootParameter.setValue(pathToBoardNumberOfChannels, String.valueOf(this.getRepository().getNumberOfChannelsOnBoard(boardId)));
-			
-			int channelIndex = 0;
-
-			final Map<Integer, DimmerLight> channels = dimmerBoardConfiguration
-					.get(boardId);
-
-			for (final Integer channelNumber : channels.keySet()) {
-				pathToChannelNumber[1].setIndex(channelIndex);
-				pathToChannelNumber[2].setIndex(channelIndex);
-				pathToLightName[1].setIndex(channelIndex);
-				pathToLightName[2].setIndex(channelIndex);
-				pathToChannelNumber[2].setIndex(channelIndex);
-				pathToLightName[2].setIndex(channelIndex);
-				pathToLightDescription[1].setIndex(channelIndex);
-				pathToLightDescription[2].setIndex(channelIndex);
-
-				rootParameter.setValue(pathToChannelNumber, String
-						.valueOf(channelNumber));
-
-				String lightName = "NONE";
-				String lightDescription = "NONE";
-
-				if (channels.get(channelNumber) != null) {
-					lightName = channels.get(channelNumber)
-							.getLightIdentifier();
-					lightDescription = channels.get(channelNumber).getDescription();
-				}
-
-				rootParameter.setValue(pathToLightDescription, lightDescription);
-				rootParameter.setValue(pathToLightName, lightName);
 				channelIndex++;
 			}
 
