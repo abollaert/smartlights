@@ -83,8 +83,9 @@ public final class LightDAOSpringJDBCImpl implements LightDAO {
 				final String lightId = rs.getString("id");
 				final int index = rs.getInt("channel_number");
 				final int boardId = rs.getInt("board_id");
+				final String description = rs.getString("description");
 				
-				final DimmerLight light = new DimmerLight(lightId, index, boardId);
+				final DimmerLight light = new DimmerLight(lightId, index, boardId, description);
 				
 				return light;
 			}

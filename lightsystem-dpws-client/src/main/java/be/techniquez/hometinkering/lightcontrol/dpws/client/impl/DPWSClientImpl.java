@@ -45,6 +45,9 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 
 	/** The name of the action that gets us the configuration. */
 	private static final String GET_CONFIGURATION_ACTION_NAME = "GetCurrentConfiguration";
+	
+	/** The name of the action that updates a channel. */
+	private static final String UPDATE_CHANNEL_ACTION_NAME = "UpdateChannel";
 
 	/** The port type of the service that holds the configuration service. */
 	private static final String CONFIGURATION_SERVICE_ID = "http://www.techniquez.be/hometinkering/lightcontrol/dpws/ConfigurationService";
@@ -293,8 +296,19 @@ public final class DPWSClientImpl extends Client implements DPWSClient {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	public final void updateLightInformation(final int boardId, final int channelNumber, final String lightName, final String lightDescription) throws DPWSException {
 		logger.info("Updating channel [" + channelNumber + "] on board [" + boardId + "] to have name [" + lightName + "] and description [" + lightDescription + "]");
+		
+		final AbstractAction updateChannelAction = this.configurationService.getAction(UPDATE_CHANNEL_ACTION_NAME, "ConfigurationService");
+		updateChannelAction.getInputParameter("boardId").setValue(String.valueOf(boardId));
+		updateChannelAction.getInputParameter("channelNumber").setValue(String.valueOf(channelNumber));
+		updateChannelAction.getInputParameter("lightName").setValue(lightName);
+		updateChannelAction.getInputParameter("lightDescription").setValue(lightDescription);
+		
+		updateChannelAction.invoke();
 		
 		logger.info("Done, information has been updated...");
 	}

@@ -71,6 +71,7 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 		final PVI[] pathToBoardDriverName = PVI.createPath("Board/DriverName");
 		final PVI[] pathToChannelNumber = PVI.createPath("Board/Channel/ChannelNumber");
 		final PVI[] pathToLightName = PVI.createPath("Board/Channel/LightName");
+		final PVI[] pathToLightDescription = PVI.createPath("Board/Channel/LightDescription");
 
 		int boardIndex = 0;
 		
@@ -96,6 +97,7 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 			
 			pathToChannelNumber[0].setIndex(boardIndex);
 			pathToLightName[0].setIndex(boardIndex);
+			pathToLightDescription[0].setIndex(boardIndex);
 
 			int channelIndex = 0;
 
@@ -107,18 +109,24 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 				pathToChannelNumber[2].setIndex(channelIndex);
 				pathToLightName[1].setIndex(channelIndex);
 				pathToLightName[2].setIndex(channelIndex);
+				pathToLightDescription[1].setIndex(channelIndex);
+				pathToLightDescription[2].setIndex(channelIndex);
 
 				rootParameter.setValue(pathToChannelNumber, String
 						.valueOf(channelNumber));
 
 				String lightName = "NONE";
+				String lightDescription = "NONE";
 
 				if (channels.get(channelNumber) != null) {
 					lightName = channels.get(channelNumber)
 							.getLightIdentifier();
+					lightDescription = channels.get(channelNumber).getDescription();
 				}
 
 				rootParameter.setValue(pathToLightName, lightName);
+				rootParameter.setValue(pathToLightDescription, lightDescription);
+				
 				channelIndex++;
 			}
 
@@ -132,6 +140,7 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 			pathToBoardType[1].setIndex(0);
 			pathToChannelNumber[0].setIndex(boardIndex);
 			pathToLightName[0].setIndex(boardIndex);
+			pathToLightDescription[0].setIndex(boardIndex);
 
 			rootParameter.setValue(pathToBoardID, String.valueOf(boardId));
 			rootParameter.setValue(pathToBoardType, "DIMMER");
@@ -155,17 +164,22 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 				pathToLightName[2].setIndex(channelIndex);
 				pathToChannelNumber[2].setIndex(channelIndex);
 				pathToLightName[2].setIndex(channelIndex);
+				pathToLightDescription[1].setIndex(channelIndex);
+				pathToLightDescription[2].setIndex(channelIndex);
 
 				rootParameter.setValue(pathToChannelNumber, String
 						.valueOf(channelNumber));
 
 				String lightName = "NONE";
+				String lightDescription = "NONE";
 
 				if (channels.get(channelNumber) != null) {
 					lightName = channels.get(channelNumber)
 							.getLightIdentifier();
+					lightDescription = channels.get(channelNumber).getDescription();
 				}
 
+				rootParameter.setValue(pathToLightDescription, lightDescription);
 				rootParameter.setValue(pathToLightName, lightName);
 				channelIndex++;
 			}
@@ -190,6 +204,7 @@ public final class GetCurrentConfigurationAction extends AbstractDPWSAction {
 		final ParameterType channelInfoType = new ParameterType("ChannelInfoType", this.getNamespace());
 		channelInfoType.addElement("ChannelNumber", ParameterType.PARAMETER_TYPE_INTEGER, 1, 1);
 		channelInfoType.addElement("LightName", ParameterType.PARAMETER_TYPE_STRING, 1, 1);
+		channelInfoType.addElement("LightDescription", ParameterType.PARAMETER_TYPE_STRING, 1, 1);
 
 		// We need to have this one included in a type that holds a board...
 		final ParameterType boardType = new ParameterType("BoardType", this.getNamespace());

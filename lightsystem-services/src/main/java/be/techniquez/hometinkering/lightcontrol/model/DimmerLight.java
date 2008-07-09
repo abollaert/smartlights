@@ -12,6 +12,9 @@ public final class DimmerLight {
 	/** The light identifier. */
 	private final String lightIdentifier;
 
+	/** The description of a light. */
+	private final String description;
+	
 	/** The index of the light we are talking about. */
 	private final int lightIndex;
 	
@@ -27,13 +30,24 @@ public final class DimmerLight {
 	 * @param	lightIdentifier	The identifier of the light.
 	 * @param 	lightIndex		The channel number on the board.
 	 * @param 	controlBoard	The board controlling the light.
+	 * @param	description		The description of the light.
 	 */
-	public DimmerLight(final String lightIdentifier, final int lightIndex, final int boardID) {
+	public DimmerLight(final String lightIdentifier, final int lightIndex, final int boardID, final String description) {
 		this.lightIdentifier = lightIdentifier;
 		this.lightIndex = lightIndex;
 		this.boardId = boardID;
+		this.description = description;
 	}
 	
+	/**
+	 * Returns the description of the light.
+	 * 
+	 * @return	The description of the light.
+	 */
+	public final String getDescription() {
+		return description;
+	}
+
 	/**
 	 * Returns true if the light is on, false if not.
 	 * 
