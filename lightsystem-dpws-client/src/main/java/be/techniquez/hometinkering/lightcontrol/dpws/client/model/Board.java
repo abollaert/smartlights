@@ -3,15 +3,20 @@ package be.techniquez.hometinkering.lightcontrol.dpws.client.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import be.techniquez.hometinkering.lightcontrol.dpws.client.DPWSClient;
+
 /**
  * Abstract base class for the boards.
  * 
  * @author
  */
 public abstract class Board {
+	
+	/** The DPWS client governing this board. */
+	private final DPWSClient client;
 
 	/** The board ID. */
-	private final String id;
+	private final int id;
 	
 	/** The board software version. */
 	private final String softwareVersion;
@@ -29,10 +34,11 @@ public abstract class Board {
 	 * @param 	softwareVersion		The software version.
 	 * @param 	driverName			The driver name.
 	 */
-	public Board(final String id, final String softwareVersion, final String driverName) {
+	public Board(final int id, final String softwareVersion, final String driverName, final DPWSClient client) {
 		this.id = id;
 		this.softwareVersion = softwareVersion;
 		this.driverName = driverName;
+		this.client = client;
 	}
 	
 	/**
@@ -69,7 +75,7 @@ public abstract class Board {
 	 * 
 	 * @return	The ID of the board.
 	 */
-	public final String getId() {
+	public final int getId() {
 		return id;
 	}
 
@@ -87,7 +93,16 @@ public abstract class Board {
 	 * 
 	 * @return	The driver name that loaded the board.
 	 */
-	public String getDriverName() {
+	public final String getDriverName() {
 		return driverName;
+	}
+	
+	/**
+	 * Returns the DPWS client governing this board.
+	 * 
+	 * @return	The DPWS client governing this board.
+	 */
+	protected final DPWSClient getDPWSClient() {
+		return this.client;
 	}
 } 
