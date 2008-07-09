@@ -21,6 +21,9 @@ public final class DigitalLight {
 	/** The board ID. */
 	private final int boardId;
 	
+	/** The description of the light. */
+	private final String description;
+	
 	/**
 	 * Creates a new instance.
 	 * 
@@ -28,12 +31,22 @@ public final class DigitalLight {
 	 * @param 	lightIndex			The light index.
 	 * @param 	controlBoard		The control board.
 	 */
-	public DigitalLight(final String lightIdentifier, final int lightIndex, final int boardId) {
+	public DigitalLight(final String lightIdentifier, final int lightIndex, final int boardId, final String description) {
 		this.lightIdentifier = lightIdentifier;
 		this.boardId = boardId;
 		this.lightIndex = lightIndex;
+		this.description = description;
 	}
 	
+	/**
+	 * Returns the description of the light.
+	 * 
+	 * @return	The description of the light.
+	 */
+	public final String getDescription() {
+		return description;
+	}
+
 	/**
 	 * Returns true if the light is on, false if not.
 	 * 
