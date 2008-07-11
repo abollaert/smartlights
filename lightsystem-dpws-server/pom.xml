@@ -9,80 +9,15 @@
 	<parent>
     	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
     	<artifactId>server</artifactId>
-    	<version>0.1</version>
+    	<version>0.1-SNAPSHOT</version>
   	</parent>
   	
 	<artifactId>lightsystem-dpws-server</artifactId>
-	<name>lightsystem-dpws-server</name>
+	<name>Server : DPWS interface</name>
 
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-dpws-server</connection>
 	</scm>
-	
-	<repositories>
-		<repository>
-			<id>Maven main repo</id>
-			<layout>default</layout>
-
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<dowloadJavadocs>true</dowloadJavadocs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	
 	<dependencies>
 		<!-- DPWS stack. -->

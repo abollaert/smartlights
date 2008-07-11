@@ -8,79 +8,14 @@
 	
 	<parent>
     	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-    	<artifactId>server</artifactId>
-    	<version>0.1</version>
+    	<artifactId>drivers</artifactId>
+    	<version>0.1-SNAPSHOT</version>
   	</parent>
 	
 	<artifactId>board-spi-api</artifactId>
-	<name>board-spi-api</name>
+	<name>Drivers : API Specification</name>
 
 	<scm>
 		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/board-spi-api</connection>
 	</scm>
-	
-	<repositories>
-		<repository>
-			<id>Maven main repo</id>
-			<layout>default</layout>
-
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<dowloadJavadocs>true</dowloadJavadocs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
