@@ -1,9 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-                      http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
@@ -17,7 +12,7 @@
 	<name>Server : Lightsystem services API</name>
 
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-services</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/lightsystem-services</connection>
 	</scm>
 	
 	<dependencies>
