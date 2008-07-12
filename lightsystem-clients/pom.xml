@@ -3,18 +3,62 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-    	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
-    	<artifactId>all</artifactId>
-    	<version>0.1</version>
-  	</parent>
-	
+	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
 	<artifactId>clients</artifactId>
+	<version>0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>lightsystem-clients</name>
+	<name>DPWS based lightsystem : Client software</name>
 	
 	<modules>
-		<module>../lightsystem-dpws-client</module>
-		<module>../lightsystem-ui-configuration</module>
+		<module>lightsystem-dpws-client</module>
+		<module>lightsystem-ui-configuration</module>
 	</modules>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<dowloadJavadocs>true</dowloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

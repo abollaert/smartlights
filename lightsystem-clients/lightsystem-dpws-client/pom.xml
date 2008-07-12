@@ -9,76 +9,11 @@
 	<parent>
     	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
     	<artifactId>clients</artifactId>
-    	<version>0.1</version>
+    	<version>0.1-SNAPSHOT</version>
   	</parent>
   	
 	<artifactId>lightsystem-dpws-client</artifactId>
-	<name>lightsystem-dpws-client</name>
-
-	<repositories>
-		<repository>
-			<id>Maven main repo</id>
-			<layout>default</layout>
-
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-
-			<url>http://repo1.maven.org/maven2</url>
-		</repository>
-	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<configuration>
-					<downloadSources>true</downloadSources>
-					<dowloadJavadocs>true</dowloadJavadocs>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+	<name>Client : Lightsystem DPWS client library</name>
 	
 	<dependencies>
 		<!-- DPWS stack. -->
