@@ -8,7 +8,7 @@
   	</parent>
   	
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/tags/release-0.1/lightsystem-drivers/board-spi-arduino</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server/lightsystem-drivers/board-spi-arduino</connection>
 	</scm>
 
 	<artifactId>board-spi-arduino</artifactId>

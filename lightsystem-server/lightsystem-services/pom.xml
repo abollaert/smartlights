@@ -12,7 +12,7 @@
 	<name>Server : Lightsystem services API</name>
 	
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/tags/release-0.1/lightsystem-services</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server/lightsystem-services</connection>
 	</scm>
 	
 	<dependencies>
