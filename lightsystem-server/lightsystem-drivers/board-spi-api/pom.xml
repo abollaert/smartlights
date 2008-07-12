@@ -4,13 +4,13 @@
 	<parent>
     	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
     	<artifactId>drivers</artifactId>
-    	<version>0.1</version>
+    	<version>0.1-SNAPSHOT</version>
   	</parent>
 	
 	<artifactId>board-spi-api</artifactId>
 	<name>Drivers : API Specification</name>
 
 	<scm>
-		<connection>scm:svn:svn://heimdall/personal/domotics/lightcontrol/tags/release-0.1</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server/lightsystem-drivers/board-spi-api</connection>
 	</scm>
 </project>
