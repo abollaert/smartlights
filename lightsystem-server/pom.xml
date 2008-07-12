@@ -84,7 +84,7 @@
 		<repository>
 			<id>repo</id>
 			<name>Repository Name</name>
-			<url>file://home/alex/.m2/repository</url>
+			<url>file:///home/alex/.m2/repository</url>
 		</repository>
 	</distributionManagement>
 </project>
