@@ -4,7 +4,7 @@
 	<parent>
     	<groupId>be.techniquez.hometinkering.lightcontrol</groupId>
     	<artifactId>server</artifactId>
-    	<version>0.1-SNAPSHOT</version>
+    	<version>0.1</version>
   	</parent>
   	
 	<artifactId>lightsystem-services</artifactId>
@@ -12,7 +12,7 @@
 	<name>Server : Lightsystem services API</name>
 	
 	<scm>
-		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/trunk/lightsystem-server/lightsystem-services</connection>
+		<connection>scm:svn:svn://continuum:contiki7979@heimdall/personal/domotics/lightcontrol/tags/release-0.1/lightsystem-services</connection>
 	</scm>
 	
 	<dependencies>
