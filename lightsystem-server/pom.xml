@@ -79,7 +79,6 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<commitByProject>true</commitByProject>
 				</configuration>
 			</plugin>
 		</plugins>
