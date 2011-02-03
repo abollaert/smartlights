@@ -111,6 +111,12 @@ public final class SerialDriver extends AbstractDriver {
 	
 	public final int saveMood(final Mood mood) {
 		final StoredMoodInfo moodInfo = this.getStorage().saveMoodInformation(mood.getId(), mood.getName());
+		
+		if (mood.getId() == -1) {
+			mood.setId(moodInfo.getId());
+			this.moods.add(mood);
+		}
+		
 		return moodInfo.getId();
 	}
 

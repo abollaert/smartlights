@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -82,6 +83,9 @@ public final class TCPClient {
 	
 	/** URI for getting the output state of a dimmer channel. */
 	private static final String URI_GET_DIMMER_OUTPUT_STATE = "/api/GetDimmerOutputState";
+	
+	/** URI for getting all moods. */
+	private static final String URI_GET_MOODS = "/api/GetMoods";
 	
 	/** The HTTP client. */
 	private HttpClient httpClient;
@@ -484,5 +488,9 @@ public final class TCPClient {
 		if (response.getType() == Api.MessageResponse.Type.ERROR) {
 			throw new IOException(response.getMessage());
 		}
+	}
+	
+	public final Api.MoodList getAllMoods() throws IOException {
+		return (Api.MoodList)this.execute(URI_GET_MOODS, null, Api.MoodList.newBuilder());
 	}
 }

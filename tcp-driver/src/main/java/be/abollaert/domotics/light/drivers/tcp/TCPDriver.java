@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.abollaert.domotics.light.api.ChannelState;
 import be.abollaert.domotics.light.api.DigitalModule;
 import be.abollaert.domotics.light.api.DimmerModule;
 import be.abollaert.domotics.light.api.Driver;
@@ -105,7 +106,6 @@ public final class TCPDriver implements Driver {
 					final int moduleId = dimmerModule.getModuleId();
 					final int numberOfChannels = dimmerModule.getNumberOfChannels();
 					final String firmwareVersion = dimmerModule.getFirmwareVersion();
-					
 					final int switchThreshold = dimmerModule.getConfiguration().getSwitchThresholdInMs();
 					final int dimmerDelay = dimmerModule.getConfiguration().getDimmerDelay();
 					final int dimmerThreshold = dimmerModule.getConfiguration().getDimmerThresholdInMs();
@@ -117,6 +117,23 @@ public final class TCPDriver implements Driver {
 					break;
 				}
 			}
+		}
+		
+		final Api.MoodList moods = this.tcpClient.getAllMoods();
+		
+		for (final Api.Mood mood : moods.getMoodsList()) {
+			final Mood newMood = this.getNewMood(mood.getName());
+			newMood.setId(mood.getMoodId());
+			
+			for (final Api.SwitchMoodElement element : mood.getSwitchElementsList()) {
+				newMood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), ChannelState.ON);
+			}
+			
+			for (final Api.DimmerMoodElement element : mood.getDimmerElementsList()) {
+				newMood.addDimElement(element.getModuleId(), element.getChannelNumber(), element.getPercentage());
+			}
+			
+			this.moods.add(newMood);
 		}
 	}
 
@@ -148,14 +165,16 @@ public final class TCPDriver implements Driver {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void unload() throws IOException {
+	public final void unload() throws IOException {
 	}
 
 	@Override
-	public List<Mood> getAllMoods() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+	public final List<Mood> getAllMoods() throws IOException {
+		return this.moods;
 	}
 	
 	/**
@@ -165,6 +184,7 @@ public final class TCPDriver implements Driver {
 	public final Mood getNewMood(final String name) {
 		final MoodImpl mood = new MoodImpl(this.tcpClient);
 		mood.setName(name);
+		mood.setId(-1);
 		
 		return mood;
 	}
