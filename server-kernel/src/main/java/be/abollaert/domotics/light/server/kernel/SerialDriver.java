@@ -10,8 +10,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.domotics.light.api.SwitchMoodElement;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
+import be.abollaert.domotics.light.server.kernel.persistence.StoredDimMoodElement;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredMoodInfo;
+import be.abollaert.domotics.light.server.kernel.persistence.StoredSwitchMoodElement;
 
 /**
  * Main entry point.
@@ -42,6 +45,16 @@ public final class SerialDriver extends AbstractDriver {
 		
 		for (final StoredMoodInfo moodInfo : moods) {
 			this.moods.add(new MoodImpl(moodInfo.getId(), moodInfo.getName(), this, this.getStorage()));
+		}
+		
+		for (final Mood mood : this.moods) {
+			for (final StoredSwitchMoodElement storedSwitchElement : this.getStorage().getSwitchElementsForMood(mood.getId())) {
+				mood.addSwitchElement(storedSwitchElement.getModuleId(), storedSwitchElement.getChannelNumber(), storedSwitchElement.getRequestedState());
+			}
+			
+			for (final StoredDimMoodElement storedMoodElement : this.getStorage().getDimElementsForMood(mood.getId())) {
+				mood.addDimElement(storedMoodElement.getModuleId(), storedMoodElement.getChannelNumber(), storedMoodElement.getTargetPercentage());
+			}
 		}
 	}
 	
