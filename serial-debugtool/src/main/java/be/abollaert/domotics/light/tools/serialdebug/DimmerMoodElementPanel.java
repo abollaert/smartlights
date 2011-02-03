@@ -52,6 +52,9 @@ abstract class DimmerMoodElementPanel extends JPanel {
 	/** The driver. */
 	private final Driver driver;
 	
+	/** Indicate whether to process slider events. */
+	private boolean sliderEvents;
+	
 	
 	/**
 	 * Create a new instance.
@@ -119,19 +122,21 @@ abstract class DimmerMoodElementPanel extends JPanel {
 		this.sldPercentage.addChangeListener(new ChangeListener() {
 			@Override
 			public final void stateChanged(final ChangeEvent event) {
-				final DimmerModule module = driver.getDimmerModuleWithID((Integer)cbModule.getSelectedItem());
-				
-				try {
-					if (module.getOutputChannelState(getChannelNumber()) == ChannelState.OFF) {
-						module.switchOutputChannel(getChannelNumber(), ChannelState.ON);
+				if (sliderEvents) {
+					final DimmerModule module = driver.getDimmerModuleWithID((Integer)cbModule.getSelectedItem());
+					
+					try {
+						if (module.getOutputChannelState(getChannelNumber()) == ChannelState.OFF) {
+							module.switchOutputChannel(getChannelNumber(), ChannelState.ON);
+						}
+						
+						module.dim(getChannelNumber(), (short)sldPercentage.getValue());
+					} catch (IOException e) {
+						JOptionPane.showMessageDialog(DimmerMoodElementPanel.this, "IO error while dimming.", "Error while adjusting", JOptionPane.ERROR_MESSAGE);
 					}
 					
-					module.dim(getChannelNumber(), (short)sldPercentage.getValue());
-				} catch (IOException e) {
-					JOptionPane.showMessageDialog(DimmerMoodElementPanel.this, "IO error while dimming.", "Error while adjusting", JOptionPane.ERROR_MESSAGE);
+					lblPercentage.setText(String.valueOf(sldPercentage.getValue()));
 				}
-				
-				lblPercentage.setText(String.valueOf(sldPercentage.getValue()));
 			}
 		});
 		
@@ -212,5 +217,16 @@ abstract class DimmerMoodElementPanel extends JPanel {
 	@Override
 	public final Dimension getMaximumSize() {
 		return super.getPreferredSize();
+	}
+	
+	void setDimElement(final DimMoodElement element) {
+		this.sliderEvents = false;
+		
+		this.cbModule.setSelectedItem(element.getModuleId());
+		this.cbChannel.setSelectedItem(element.getChannelNumber());
+		this.sldPercentage.setValue(element.getTargetPercentage());
+		this.lblPercentage.setText(String.valueOf(element.getTargetPercentage()));
+		
+		this.sliderEvents = true;
 	}
 }

@@ -171,4 +171,9 @@ abstract class SwitchElementPanel extends JPanel {
 	public final Dimension getMaximumSize() {
 		return super.getPreferredSize();
 	}
+	
+	void setSwitchElement(final SwitchMoodElement element) {
+		this.cbModule.setSelectedItem(element.getModuleId());
+		this.cbChannel.setSelectedItem(element.getChannelNumber());
+	}
 }

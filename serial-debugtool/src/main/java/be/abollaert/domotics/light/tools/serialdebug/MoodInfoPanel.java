@@ -28,6 +28,7 @@ final class MoodInfoPanel extends PropertiesPanel {
 		super("Mood information");
 		
 		this.buildUI();
+		this.txtId.setEditable(false);
 	}
 	
 	/**

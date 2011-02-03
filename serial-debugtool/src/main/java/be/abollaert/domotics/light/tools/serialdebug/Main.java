@@ -134,6 +134,10 @@ public final class Main {
 			final TreeNode moodsNode = new StringTreeNode(NodeType.MOODS, "Moods", this.getTreeModel());
 			rootNode.add(moodsNode);
 			
+			for (final Mood mood : this.driver.getAllMoods()) {
+				moodsNode.add(new MoodNode(mood, this.getTreeModel()));
+			}
+			
 			final DefaultTreeModel model = new DefaultTreeModel(rootNode);
 			this.tree.setModel(model);
 			

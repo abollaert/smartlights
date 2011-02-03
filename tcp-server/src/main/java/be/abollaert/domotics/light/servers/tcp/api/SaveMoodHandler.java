@@ -86,24 +86,7 @@ final class SaveMoodHandler extends AbstractHandler {
 	}
 	
 	private final void synchronizeSwitchElements(final Mood mood, final List<Api.SwitchMoodElement> messageElements) {
-		for (final Iterator<SwitchMoodElement> elementIterator = mood.getSwitchMoodElements().iterator(); elementIterator.hasNext(); ) {
-			final SwitchMoodElement moodElement = elementIterator.next();
-			
-			boolean contains = false;
-			
-			for (final Iterator<Api.SwitchMoodElement> messageElementIterator = messageElements.iterator(); messageElementIterator.hasNext(); ) {
-				final Api.SwitchMoodElement messageElement = messageElementIterator.next();
-				
-				if (messageElement.getChannelNumber() == moodElement.getChannelNumber() && messageElement.getModuleId() == moodElement.getModuleId()) {
-					messageElementIterator.remove();
-					contains = true;
-				}
-			}
-			
-			if (!contains) {
-				elementIterator.remove();
-			}
-		}
+		mood.getSwitchMoodElements().clear();
 		
 		for (final Api.SwitchMoodElement element : messageElements) {
 			mood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), ChannelState.ON);
@@ -111,22 +94,7 @@ final class SaveMoodHandler extends AbstractHandler {
 	}
 	
 	private final void synchronizeDimmerElements(final Mood mood, final List<Api.DimmerMoodElement> messageElements) {
-		for (final Iterator<DimMoodElement> elementIterator = mood.getDimMoodElements().iterator(); elementIterator.hasNext(); ) {
-			final DimMoodElement moodElement = elementIterator.next();
-			
-			boolean contains = false;
-			
-			for (final Api.DimmerMoodElement messageElement : messageElements) {
-				if (messageElement.getChannelNumber() == moodElement.getChannelNumber() && messageElement.getModuleId() == moodElement.getModuleId()) {
-					moodElement.setTargetPercentage(messageElement.getPercentage());
-					contains = true;
-				}
-			}
-			
-			if (!contains) {
-				elementIterator.remove();
-			}
-		}
+		mood.getDimMoodElements().clear();
 		
 		for (final Api.DimmerMoodElement element : messageElements) {
 			mood.addDimElement(element.getModuleId(), element.getChannelNumber(), element.getPercentage());

@@ -13,8 +13,10 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import be.abollaert.domotics.light.api.ChannelState;
+import be.abollaert.domotics.light.api.DimMoodElement;
 import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.domotics.light.api.SwitchMoodElement;
 
 final class MoodPanel extends JPanel {
 	
@@ -43,64 +45,80 @@ final class MoodPanel extends JPanel {
 	private final JButton btnAddDigitalElement = new JButton(new AbstractAction("Add new switch element") {
 		@Override
 		public final void actionPerformed(final ActionEvent e) {
-			final SwitchElementPanel elementPanel = new SwitchElementPanel(driver, mood) {
-				@Override
-				final boolean channelTaken(final int moduleId, final int channelNumber) {
-					for (final SwitchElementPanel switchPanel : switchElementPanels) {
-						if (switchPanel.getModuleId() != null && switchPanel.getChannelNumber() != null) {
-							if (switchPanel.getModuleId().intValue() == moduleId && switchPanel.getChannelNumber().intValue() == channelNumber) {
-								return true;
-							}
-						}
-					}
-					return false;
-				}
-				
-				@Override
-				final void remove() {
-					elementsPanel.remove(this);
-					switchElementPanels.remove(this);
-					MoodPanel.this.updateUI();
-				}
-			};
-			
-			switchElementPanels.add(elementPanel);
-			elementsPanel.add(elementPanel);
-			
+			addSwitchElementPanel(null);
 			updateUI();
 		}
 	});
 	
+	private final void addSwitchElementPanel(final SwitchMoodElement element) {
+		final SwitchElementPanel elementPanel = new SwitchElementPanel(driver, mood) {
+			@Override
+			final boolean channelTaken(final int moduleId, final int channelNumber) {
+				for (final SwitchElementPanel switchPanel : switchElementPanels) {
+					if (switchPanel.getModuleId() != null && switchPanel.getChannelNumber() != null) {
+						if (switchPanel.getModuleId().intValue() == moduleId && switchPanel.getChannelNumber().intValue() == channelNumber) {
+							return true;
+						}
+					}
+				}
+				
+				return false;
+			}
+			
+			@Override
+			final void remove() {
+				elementsPanel.remove(this);
+				switchElementPanels.remove(this);
+				
+				MoodPanel.this.updateUI();
+			}
+		};
+		
+		if (element != null) {
+			elementPanel.setSwitchElement(element);
+		}
+		
+		this.switchElementPanels.add(elementPanel);
+		this.elementsPanel.add(elementPanel);
+	}
+	
 	private final JButton btnAddDimmerElement = new JButton(new AbstractAction("Add dimmer element") {
 		@Override
 		public final void actionPerformed(ActionEvent e) {
-			final DimmerMoodElementPanel elementPanel = new DimmerMoodElementPanel(driver, mood) {
-				@Override
-				final void remove() {
-					elementsPanel.remove(this);
-					dimmerElementPanels.remove(this);
-					MoodPanel.this.updateUI();
-				}
-				
-				@Override
-				final boolean channelTaken(final int moduleId, final int channelNumber) {
-					for (final DimmerMoodElementPanel dimmerPanel : dimmerElementPanels) {
-						if (dimmerPanel.getModuleId() != null && dimmerPanel.getChannelNumber() != null) {
-							if (dimmerPanel.getModuleId().intValue() == moduleId && dimmerPanel.getChannelNumber().intValue() == channelNumber) {
-								return true;
-							}
-						}
-					}
-					return false;
-				}
-			};
-			
-			dimmerElementPanels.add(elementPanel);
-			elementsPanel.add(elementPanel);
-			
+			addDimElementPanel(null);
 			updateUI();
 		}
 	});
+	
+	private final void addDimElementPanel(final DimMoodElement element) {
+		final DimmerMoodElementPanel elementPanel = new DimmerMoodElementPanel(driver, mood) {
+			@Override
+			final void remove() {
+				elementsPanel.remove(this);
+				dimmerElementPanels.remove(this);
+				MoodPanel.this.updateUI();
+			}
+			
+			@Override
+			final boolean channelTaken(final int moduleId, final int channelNumber) {
+				for (final DimmerMoodElementPanel dimmerPanel : dimmerElementPanels) {
+					if (dimmerPanel.getModuleId() != null && dimmerPanel.getChannelNumber() != null) {
+						if (dimmerPanel.getModuleId().intValue() == moduleId && dimmerPanel.getChannelNumber().intValue() == channelNumber) {
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		};
+		
+		if (element != null) {
+			elementPanel.setDimElement(element);
+		}
+		
+		this.dimmerElementPanels.add(elementPanel);
+		this.elementsPanel.add(elementPanel);
+	}
 	
 	/** The mood to set. */
 	private Mood mood;
@@ -163,5 +181,27 @@ final class MoodPanel extends JPanel {
 		this.mood = mood;
 		
 		this.moodInfoPanel.setMood(mood);
+		
+		for (final SwitchElementPanel panel : this.switchElementPanels) {
+			this.elementsPanel.remove(panel);
+		}
+		
+		this.switchElementPanels.clear();
+		
+		for (final DimmerMoodElementPanel panel : this.dimmerElementPanels) {
+			this.elementsPanel.remove(panel);
+		}
+		
+		this.dimmerElementPanels.clear();
+		
+		for (final SwitchMoodElement switchElement : mood.getSwitchMoodElements()) {
+			this.addSwitchElementPanel(switchElement);
+		}
+		
+		for (final DimMoodElement dimElement : mood.getDimMoodElements()) {
+			this.addDimElementPanel(dimElement);
+		}
+		
+		this.updateUI();
 	}
 }
