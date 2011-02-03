@@ -1,0 +1,53 @@
+package be.abollaert.domotics.light.protocolbuffers;
+
+message DigitalOutputChannelStateChanged {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool newState = 3;
+}
+
+message DigitalInputChannelStateChanged {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool newState = 3;
+}
+
+message DigitalModuleConfigurationChanged {
+	required uint32 moduleId = 1;
+}
+
+message DimmerModuleConfigurationChanged {
+	required uint32 moduleId = 1;
+}
+
+message DimmerOutputChannelStateChanged {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool on = 3;
+	required uint32 dimmerPercentage = 4;
+}
+
+message DimmerInputChannelStateChanged {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool newState = 3;
+}
+
+message Event {
+	enum Type { 
+		DIGITAL_OUTPUT_CHANNEL_STATE_CHANGED = 1; 
+		DIGITAL_INPUT_CHANNEL_STATE_CHANGED = 2; 
+		DIGITAL_MODULE_CONFIG_CHANGE = 3; 
+		DIMMER_MODULE_CONFIG_CHANGE = 4; 
+		DIMMER_MODULE_OUTPUT_CHANNEL_STATE_CHANGED = 5;
+		DIMMER_MODULE_INPUT_CHANNEL_STATE_CHANGED = 6;
+	}
+	
+	required Type type = 1;
+	optional DigitalOutputChannelStateChanged digitalOutputChannelStateChangedEvent = 2;
+	optional DigitalInputChannelStateChanged digitalInputChannelStateChangedEvent = 3;
+	optional DigitalModuleConfigurationChanged digitalModuleConfigChanged = 4;
+	optional DimmerModuleConfigurationChanged dimmerModuleConfigChanged = 5;
+	optional DimmerInputChannelStateChanged dimmerInputStateChanged = 6;
+	optional DimmerOutputChannelStateChanged dimmerOutputStateChanged = 7;
+}

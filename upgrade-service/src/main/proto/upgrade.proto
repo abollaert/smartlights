@@ -1,0 +1,21 @@
+package upgradeservice;
+
+option java_package = "be.abollaert.domotics.light.services.upgrade.proto";
+option java_outer_classname = "UpgradeProto";
+
+message UpgradeRequest {
+	required uint32 moduleId = 1;
+	required bytes hexFile = 2;
+	required uint32 hexFileCrc = 3;
+}
+
+message UpgradeResponse {
+	enum ResponseCode {
+		OK = 0;
+		ERROR = 1;
+		WARN = 2;
+	}
+	
+	required ResponseCode responseCode = 1;
+	optional string message = 2;
+}

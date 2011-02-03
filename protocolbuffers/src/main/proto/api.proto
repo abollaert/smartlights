@@ -1,0 +1,229 @@
+package be.abollaert.domotics.light.protocolbuffers;
+
+message Module {
+	enum Type { DIGITAL = 1; DIMMER = 2; }
+	
+	required Type type = 1;
+	optional DigitalModule digitalModule = 2;
+	optional DimmerModule dimmerModule = 3;
+}
+
+message DigitalModule {
+	required uint32 moduleId = 1;
+	required uint32 numberOfChannels = 2;
+	required string firmwareVersion = 3;
+	required DigitalModuleConfig configuration = 4;
+}
+
+message DigitalModuleConfig {
+	required uint32 switchThresholdInMs = 1;
+}
+
+message DimmerModuleConfig {
+	required uint32 switchThresholdInMs = 1;
+	required uint32 dimmerThresholdInMs = 2;
+	required uint32 dimmerDelay = 3;
+}
+	
+message DimmerModule {
+	required uint32 moduleId = 1;
+	required uint32 numberOfChannels = 2;
+	required string firmwareVersion = 3;
+	required DimmerModuleConfig configuration = 4;
+}
+
+message DigitalInputChannelConfig {
+	required uint32 mappedOutputChannel = 1;
+	required bool defaultState = 2;
+	required bool currentSwitchState = 3;
+	required bool currentOutputState = 4;
+	required uint32 timerInSec = 5;
+	optional string name = 6;
+	optional bool enableLogging = 7;
+}
+
+message DimmerInputChannelConfig {
+	required uint32 mappedOutputChannel = 1;
+	required bool defaultState = 2;
+	required uint32 defaultPercentage = 3;
+	required bool currentSwitchState = 4;
+	required bool currentOutputState = 5;
+	required uint32 currentDimmerPercentage = 6;
+	required uint32 timerInSec = 7;
+	required bool defaultDirection = 8;
+	optional string name = 9;
+	optional bool enableLogging = 10;
+}
+
+message GetModulesResponse {
+	repeated Module modules = 1;
+}
+
+message GetDigitalModuleConfig {
+	required uint32 moduleId = 1;
+}
+
+message GetDigitalModuleConfigResponse {
+	required DigitalModuleConfig config = 1;
+}
+
+message GetDimmerModuleConfig {
+	required uint32 moduleId = 1;
+}
+
+message GetDimmerModuleConfigResponse {
+	required DimmerModuleConfig config = 1;
+}
+
+message GetDigitalInputChannelConfig {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+}
+
+message GetDigitalInputChannelConfigResponse {
+	required DigitalInputChannelConfig config = 1;
+}
+
+message GetDimmerInputChannelConfig {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+}
+
+message GetDimmerInputChannelConfigResponse {
+	required DimmerInputChannelConfig config = 1;
+}
+
+message SetDigitalInputConfig {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required DigitalInputChannelConfig config = 3;
+}
+
+message SetDigitalModuleConfig {
+	required uint32 moduleId = 1;
+	required DigitalModuleConfig configuration = 2;
+}
+
+message SetDimmerInputConfig {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required DimmerInputChannelConfig config = 3;
+}
+
+message SetDimmerModuleConfig {
+	required uint32 moduleId = 1;
+	required DimmerModuleConfig configuration = 2;
+}
+
+message SaveDigitalModuleConfig {
+	required uint32 moduleId = 1;
+}
+
+message SaveDimmerModuleConfig {
+	required uint32 moduleId = 1;
+}
+
+message SwitchOutput {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool requiredState = 3;
+}
+
+message Dim {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required uint32 percentage = 3;
+}
+
+message MessageResponse {
+	enum Type { OK = 1; ERROR = 2; }
+	
+	required Type type = 1;
+	optional string message = 2;
+}
+
+message DigitalOutputChannel {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required string name = 3;
+	required bool currentState = 4;
+}
+
+message DimmerOutputChannel {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required string name = 3;
+	required bool currentState = 4;
+	required uint32 currentPercentage = 5;
+}
+
+message GetOutputChannelsResponse {
+	repeated DigitalOutputChannel digitalChannels = 1;
+	repeated DimmerOutputChannel dimmerChannels = 2;
+}
+
+message SwitchEvent {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required uint64 timestamp = 3;
+	required bool state = 4;
+}
+
+message GetSwitchEvents {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	optional uint64 startDate = 3;
+	optional uint64 endDate = 4;
+}
+
+message SwitchEventList {
+	repeated SwitchEvent events = 1;
+}
+
+message GetOutputChannelState {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+}
+
+message DigitalChannelOutputState {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool state = 3;
+}
+
+message DimmerChannelOutputState {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required bool state = 3;
+	required uint32 percentage = 4;
+}
+
+message Mood {
+	required uint32 moodId = 1;
+	required string name = 2;
+	repeated SwitchMoodElement switchElements = 3;
+	repeated DimmerMoodElement dimmerElements = 4;
+}
+
+message SwitchMoodElement {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+}
+
+message DimmerMoodElement {
+	required uint32 moduleId = 1;
+	required uint32 channelNumber = 2;
+	required uint32 percentage = 3;
+}
+
+message MoodList {
+	repeated Mood moods = 1;
+}
+
+message SaveMood {
+	required Mood mood = 1;
+}
+
+message SaveMoodResponse {
+	required uint32 moodId = 1;
+}

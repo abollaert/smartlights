@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>be.abollaert.domotics.lights</groupId>
+		<artifactId>all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>be.abollaert.domotics.lights</groupId>
+	<artifactId>upgrade-service</artifactId>
+	<name>Upgrade service</name>
+	<packaging>bundle</packaging>
+
+	<description>
+		Upgrade service. Runs on the OSGI container and is capable of upgrading the nodes.
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.rxtx</groupId>
+			<artifactId>rxtx</artifactId>
+			<version>2.1.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>${protocolbuffers.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>UpgradeService</Bundle-SymbolicName>
+						<Export-Package>be.abollaert.domotics.light.services.upgrade</Export-Package>
+						<Private-Package>be.abollaert.domotics.light.services.upgrade.*</Private-Package>
+						<Bundle-Activator>be.abollaert.domotics.light.services.upgrade.osgi.UpgradeServiceActivator</Bundle-Activator>
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Export-Service>be.abollaert.domotics.light.services.upgrade.UpgradeService</Export-Service>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<mkdir dir="target/generated-sources" />
+								<exec executable="protoc">
+									<arg value="--java_out=target/generated-sources" />
+									<arg value="src/main/proto/upgrade.proto" />
+								</exec>
+							</tasks>
+							<sourceRoot>target/generated-sources</sourceRoot>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>

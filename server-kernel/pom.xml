@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>be.abollaert.domotics.lights</groupId>
+		<artifactId>all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<properties>
+		<sqlite4java.version>0.201</sqlite4java.version>
+	</properties>
+
+	<groupId>be.abollaert.domotics.lights</groupId>
+	<artifactId>server-kernel</artifactId>
+	<name>Server side kernel</name>
+	<packaging>bundle</packaging>
+
+	<description>
+		Server side kernel. Runs against the modules and provides the API to clients.
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>be.abollaert.domotics.lights</groupId>
+			<artifactId>api</artifactId>
+			<version>${project.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.rxtx</groupId>
+			<artifactId>rxtx</artifactId>
+			<version>2.2pre2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.almworks.sqlite4java</groupId>
+			<artifactId>sqlite4java</artifactId>
+			<type>jar</type>
+			<version>${sqlite4java.version}</version>
+		</dependency>
+		
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>lights-server-kernel</Bundle-SymbolicName>
+						<Private-Package>*</Private-Package>
+						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
+						<Bundle-Activator>be.abollaert.domotics.light.server.kernel.KernelActivator</Bundle-Activator>
+						<Import-Package>be.abollaert.domotics.light.api,org.osgi.framework</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
