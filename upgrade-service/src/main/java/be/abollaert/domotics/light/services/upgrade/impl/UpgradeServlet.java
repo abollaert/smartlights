@@ -33,8 +33,7 @@ public final class UpgradeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/** Logger instance. */
-	private static final Logger logger = Logger.getLogger(UpgradeServlet.class
-			.getName());
+	private static final Logger logger = Logger.getLogger(UpgradeServlet.class.getName());
 	
 	/** The upgrade service. */
 	private final UpgradeService upgradeService;
