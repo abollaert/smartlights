@@ -1,6 +1,8 @@
 package be.abollaert.domotics.light.servers.tcp.api;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,52 +26,7 @@ final class TCPServerServiceTracker extends ServiceTracker {
 	private static final Logger logger = Logger
 			.getLogger(TCPServerServiceTracker.class.getName());
 	
-	/** The {@link GetModulesHandler}. */
-	private final GetModulesHandler getModulesHandler = new GetModulesHandler();
-	
-	/** The {@link SwitchOutputHandler}. */
-	private final SwitchOutputHandler switchOutputHandler = new SwitchOutputHandler();
-	
-	/** The handler for the fetch of the output channels. */
-	private final GetDigitalOutputChannelsHandler getOutputChannelsHandler = new GetDigitalOutputChannelsHandler();
-	
-	/** The {@link GetDigitalInputChannelConfigHandler}. */
-	private final GetDigitalInputChannelConfigHandler getDigitalInputChannelConfigHandler = new GetDigitalInputChannelConfigHandler();
-	
-	/** The handler responsible for configuring input channels. */
-	private final SetDigitalInputChannelConfigurationHandler setDigitalInputConfigHandler = new SetDigitalInputChannelConfigurationHandler();
-	
-	/** The handler that sets the module configuration. */
-	private final SetDigitalModuleConfigHandler setDigitalModuleConfigHandler = new SetDigitalModuleConfigHandler();
-	
-	/** The handler that saves the configuration of a digital module. */
-	private final SaveModuleConfigHandler saveDigitalModuleConfigHandler = new SaveModuleConfigHandler();
-	
-	/** The handler to return the configuration of one digital module. */
-	private final GetDigitalModuleConfigurationHandler getDigitalModuleConfigHandler = new GetDigitalModuleConfigurationHandler();
-	
-	/** The handler that allows you to set the configuration of a dimmer module. */
-	private final SetDimmerModuleConfigHandler setDimmerModuleConfigurationHandler = new SetDimmerModuleConfigHandler();
-	
-	/** The handler that gets the dimmer input configuration. */
-	private final GetDimmerInputChannelConfigHandler getDimmerInputChannelConfigHandler = new GetDimmerInputChannelConfigHandler();
-	
-	/** The handler for setting the configuration for a dimmer input. */
-	private final SetDimmerInputConfigurationHandler setDimmerInputConfigurationHandler = new SetDimmerInputConfigurationHandler();
-	
-	/** The handler for getting the dimmer output state. */
-	private final GetDimmerOutputChannelStateHandler getDimmerOutputChannelStateHandler = new GetDimmerOutputChannelStateHandler();
-	
-	/** The handler for getting the digital output state. */
-	private final GetDigitalOutputChannelStateHandler getDigitalOutputChannelStateHandler = new GetDigitalOutputChannelStateHandler();
-	
-	private final SaveMoodHandler saveMoodHandler = new SaveMoodHandler();
-	
-	/** THe handler for dimming. */
-	private final DimHandler dimHandler = new DimHandler();
-	
-	/** The handler for fetching switch events. */
-	private final GetSwitchEventsHandler getSwitchEventsHandler = new GetSwitchEventsHandler();
+	private final List<AbstractHandler> handlers = new ArrayList<AbstractHandler>();
 	
 	/** The driver. */
 	private Driver driver;
@@ -89,6 +46,24 @@ final class TCPServerServiceTracker extends ServiceTracker {
 		super(context, filter, null);
 		
 		this.eventDispatcher = new EventDispatcher();
+		
+		this.handlers.add(new GetModulesHandler());
+		this.handlers.add(new SwitchOutputHandler());
+		this.handlers.add(new GetDigitalOutputChannelsHandler());
+		this.handlers.add(new GetDigitalInputChannelConfigHandler());
+		this.handlers.add(new SetDigitalInputChannelConfigurationHandler());
+		this.handlers.add(new SetDigitalModuleConfigHandler());
+		this.handlers.add(new SaveModuleConfigHandler());
+		this.handlers.add(new GetDigitalModuleConfigurationHandler());
+		this.handlers.add(new SetDimmerModuleConfigHandler());
+		this.handlers.add(new GetDimmerInputChannelConfigHandler());
+		this.handlers.add(new SetDimmerInputConfigurationHandler());
+		this.handlers.add(new GetDimmerOutputChannelStateHandler());
+		this.handlers.add(new GetDigitalOutputChannelStateHandler());
+		this.handlers.add(new SaveMoodHandler());
+		this.handlers.add(new DimHandler());
+		this.handlers.add(new GetSwitchEventsHandler());
+		this.handlers.add(new GetAllMoodsHandler());
 	}
 
 	/**
@@ -126,22 +101,9 @@ final class TCPServerServiceTracker extends ServiceTracker {
 					}
 				}
 				
-				this.getModulesHandler.register(this.httpService, context, this.driver);
-				this.getDigitalInputChannelConfigHandler.register(this.httpService, context, this.driver);
-				this.getOutputChannelsHandler.register(this.httpService, context, this.driver);
-				this.switchOutputHandler.register(this.httpService, context, this.driver);
-				this.setDigitalInputConfigHandler.register(this.httpService, context, this.driver);
-				this.setDigitalModuleConfigHandler.register(this.httpService, context, this.driver);
-				this.saveDigitalModuleConfigHandler.register(this.httpService, context, this.driver);
-				this.getDigitalModuleConfigHandler.register(this.httpService, context, this.driver);
-				this.setDimmerModuleConfigurationHandler.register(this.httpService, context, this.driver);
-				this.getDimmerInputChannelConfigHandler.register(this.httpService, context, this.driver);
-				this.dimHandler.register(this.httpService, context, this.driver);
-				this.setDimmerInputConfigurationHandler.register(this.httpService, context, this.driver);
-				this.getSwitchEventsHandler.register(this.httpService, context, this.driver);
-				this.getDigitalOutputChannelStateHandler.register(this.httpService, context, this.driver);
-				this.getDimmerOutputChannelStateHandler.register(this.httpService, context, this.driver);
-				this.saveMoodHandler.register(this.httpService, context, this.driver);
+				for (final AbstractHandler handler : this.handlers) {
+					handler.register(this.httpService, context, this.driver);
+				}
 			}
 		}
 		
@@ -175,22 +137,9 @@ final class TCPServerServiceTracker extends ServiceTracker {
 	 * Unregisters the handlers.
 	 */
 	private final void unregisterHandlers() {
-		this.httpService.unregister(this.getModulesHandler.getURI());
-		this.httpService.unregister(this.getDigitalInputChannelConfigHandler.getURI());
-		this.httpService.unregister(this.getOutputChannelsHandler.getURI());
-		this.httpService.unregister(this.switchOutputHandler.getURI());
-		this.httpService.unregister(this.setDigitalInputConfigHandler.getURI());
-		this.httpService.unregister(this.setDigitalModuleConfigHandler.getURI());
-		this.httpService.unregister(this.saveDigitalModuleConfigHandler.getURI());
-		this.httpService.unregister(this.getDigitalModuleConfigHandler.getURI());
-		this.httpService.unregister(this.setDimmerModuleConfigurationHandler.getURI());
-		this.httpService.unregister(this.getDimmerInputChannelConfigHandler.getURI());
-		this.httpService.unregister(this.dimHandler.getURI());
-		this.httpService.unregister(this.setDimmerInputConfigurationHandler.getURI());
-		this.httpService.unregister(this.getSwitchEventsHandler.getURI());
-		this.httpService.unregister(this.getDigitalOutputChannelStateHandler.getURI());
-		this.httpService.unregister(this.getDimmerOutputChannelStateHandler.getURI());
-		this.httpService.unregister(this.saveMoodHandler.getURI());
+		for (final AbstractHandler handler : this.handlers) {
+			this.httpService.unregister(handler.getURI());
+		}
 	}
 	
 	/**
