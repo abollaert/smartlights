@@ -3,6 +3,7 @@ package be.abollaert.domotics.light.servers.tcp.api;
 import java.io.IOException;
 import java.util.List;
 
+import be.abollaert.domotics.light.api.ChannelState;
 import be.abollaert.domotics.light.api.DimMoodElement;
 import be.abollaert.domotics.light.api.Mood;
 import be.abollaert.domotics.light.api.SwitchMoodElement;
@@ -45,6 +46,7 @@ final class GetAllMoodsHandler extends AbstractHandler {
 				final Api.SwitchMoodElement.Builder moodElementBuilder = Api.SwitchMoodElement.newBuilder();
 				moodElementBuilder.setModuleId(element.getModuleId());
 				moodElementBuilder.setChannelNumber(element.getChannelNumber());
+				moodElementBuilder.setRequestedState(element.getRequestedState() == ChannelState.ON);
 				
 				moodBuilder.addSwitchElements(moodElementBuilder);
 			}

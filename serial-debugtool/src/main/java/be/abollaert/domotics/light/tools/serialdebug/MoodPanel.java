@@ -145,7 +145,7 @@ final class MoodPanel extends JPanel {
 				mood.getSwitchMoodElements().clear();
 				
 				for (final SwitchElementPanel panel : switchElementPanels) {
-					mood.addSwitchElement(panel.getModuleId(), panel.getChannelNumber(), ChannelState.ON);
+					mood.addSwitchElement(panel.getModuleId(), panel.getChannelNumber(), panel.getRequestedState());
 				}
 				
 				mood.getDimMoodElements().clear();

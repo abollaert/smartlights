@@ -61,8 +61,7 @@ final class MoodImpl implements Mood, SupportsPropertyChanges {
 	 */
 	@Override
 	public final void activate() throws IOException {
-		// TODO Auto-generated method stub
-
+		this.client.activateMood(this.getId());
 	}
 
 	/**

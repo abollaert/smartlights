@@ -9,9 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import be.abollaert.domotics.light.api.DimMoodElement;
 import be.abollaert.domotics.light.api.Mood;
-import be.abollaert.domotics.light.api.SwitchMoodElement;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredDimMoodElement;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredMoodInfo;

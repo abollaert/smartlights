@@ -208,6 +208,7 @@ message Mood {
 message SwitchMoodElement {
 	required uint32 moduleId = 1;
 	required uint32 channelNumber = 2;
+	required bool requestedState = 3;
 }
 
 message DimmerMoodElement {
@@ -225,5 +226,13 @@ message SaveMood {
 }
 
 message SaveMoodResponse {
+	required uint32 moodId = 1;
+}
+
+message ActivateMood {
+	required uint32 moodId = 1;
+}
+
+message RemoveMood {
 	required uint32 moodId = 1;
 }

@@ -10,11 +10,14 @@ import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import be.abollaert.domotics.light.api.ChannelState;
 import be.abollaert.domotics.light.api.DigitalModule;
 import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
@@ -35,6 +38,9 @@ abstract class SwitchElementPanel extends JPanel {
 	
 	/** The name. */
 	private final JTextField txtName = new JTextField(30);
+	
+	/** The requested state. */
+	private final JCheckBox cbRequestedState = new JCheckBox();
 	
 	/** The driver. */
 	private final Driver driver;
@@ -101,6 +107,8 @@ abstract class SwitchElementPanel extends JPanel {
 		this.add(new JLabel("Channel name"));
 		this.add(this.txtName);
 		this.txtName.setEditable(false);
+		this.add(new JLabel("Requested state"));
+		this.add(this.cbRequestedState);
 		
 		this.add(new JButton(new AbstractAction("Remove") {
 			@Override
@@ -164,6 +172,10 @@ abstract class SwitchElementPanel extends JPanel {
 		return (Integer)this.cbChannel.getSelectedItem();
 	}
 	
+	final ChannelState getRequestedState() {
+		return this.cbRequestedState.isSelected() ? ChannelState.ON : ChannelState.OFF;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -175,5 +187,6 @@ abstract class SwitchElementPanel extends JPanel {
 	void setSwitchElement(final SwitchMoodElement element) {
 		this.cbModule.setSelectedItem(element.getModuleId());
 		this.cbChannel.setSelectedItem(element.getChannelNumber());
+		this.cbRequestedState.setSelected(element.getRequestedState() == ChannelState.ON);
 	}
 }

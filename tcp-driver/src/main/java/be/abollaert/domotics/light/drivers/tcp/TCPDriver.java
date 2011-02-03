@@ -126,7 +126,7 @@ public final class TCPDriver implements Driver {
 			newMood.setId(mood.getMoodId());
 			
 			for (final Api.SwitchMoodElement element : mood.getSwitchElementsList()) {
-				newMood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), ChannelState.ON);
+				newMood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), element.getRequestedState() ? ChannelState.ON : ChannelState.OFF);
 			}
 			
 			for (final Api.DimmerMoodElement element : mood.getDimmerElementsList()) {

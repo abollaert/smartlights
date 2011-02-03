@@ -23,9 +23,15 @@ import be.abollaert.domotics.light.services.upgrade.proto.UpgradeProto.UpgradeRe
  * Servlet that you can upload a file to, that will then 
  * @author alex
  *
+ * FIXME: This just needs to be a handler, not a servlet in se.
  */
 public final class UpgradeServlet extends HttpServlet {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** Logger instance. */
 	private static final Logger logger = Logger.getLogger(UpgradeServlet.class
 			.getName());

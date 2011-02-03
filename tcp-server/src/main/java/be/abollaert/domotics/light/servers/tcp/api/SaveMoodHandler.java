@@ -1,15 +1,12 @@
 package be.abollaert.domotics.light.servers.tcp.api;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.abollaert.domotics.light.api.ChannelState;
-import be.abollaert.domotics.light.api.DimMoodElement;
 import be.abollaert.domotics.light.api.Mood;
-import be.abollaert.domotics.light.api.SwitchMoodElement;
 import be.abollaert.domotics.light.protocolbuffers.Api;
 
 import com.google.protobuf.Message;
@@ -89,7 +86,7 @@ final class SaveMoodHandler extends AbstractHandler {
 		mood.getSwitchMoodElements().clear();
 		
 		for (final Api.SwitchMoodElement element : messageElements) {
-			mood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), ChannelState.ON);
+			mood.addSwitchElement(element.getModuleId(), element.getChannelNumber(), element.getRequestedState() ? ChannelState.ON : ChannelState.OFF);
 		}
 	}
 	

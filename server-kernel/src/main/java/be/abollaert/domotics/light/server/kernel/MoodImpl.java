@@ -181,8 +181,8 @@ final class MoodImpl implements Mood {
 					logger.log(Level.WARNING, "Dimmer mood element : Cannot find dimmer module with ID [" + this.getModuleId() + "]");
 				}
 			} else {
-				module.switchOutputChannel(this.getChannelNumber(), ChannelState.ON);
 				module.dim(this.getChannelNumber(), (short)this.getTargetPercentage());
+				module.switchOutputChannel(this.getChannelNumber(), ChannelState.ON);
 			}
 		}
 	}

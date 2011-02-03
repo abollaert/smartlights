@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -86,6 +85,8 @@ public final class TCPClient {
 	
 	/** URI for getting all moods. */
 	private static final String URI_GET_MOODS = "/api/GetMoods";
+	
+	private static final String URI_ACTIVATE_MOOD = "/api/ActivateMood";
 	
 	/** The HTTP client. */
 	private HttpClient httpClient;
@@ -354,7 +355,8 @@ public final class TCPClient {
 			
 			elementBuilder.setModuleId(switchElement.getModuleId());
 			elementBuilder.setChannelNumber(switchElement.getChannelNumber());
-		
+			elementBuilder.setRequestedState(switchElement.getRequestedState() == ChannelState.ON);
+			
 			moodBuilder.addSwitchElements(elementBuilder.build());
 		}
 		
@@ -492,5 +494,12 @@ public final class TCPClient {
 	
 	public final Api.MoodList getAllMoods() throws IOException {
 		return (Api.MoodList)this.execute(URI_GET_MOODS, null, Api.MoodList.newBuilder());
+	}
+	
+	public final void activateMood(final int moodId) throws IOException {
+		final Api.ActivateMood.Builder requestBuilder = Api.ActivateMood.newBuilder();
+		requestBuilder.setMoodId(moodId);
+		
+		this.executeVoidMessage(URI_ACTIVATE_MOOD, requestBuilder.build());
 	}
 }
