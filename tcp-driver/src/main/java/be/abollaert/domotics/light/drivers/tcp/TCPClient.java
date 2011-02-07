@@ -88,6 +88,8 @@ public final class TCPClient {
 	
 	private static final String URI_ACTIVATE_MOOD = "/api/ActivateMood";
 	
+	private static final String URI_REMOVE_MOOD = "/api/RemoveMood";
+	
 	/** The HTTP client. */
 	private HttpClient httpClient;
 	
@@ -501,5 +503,12 @@ public final class TCPClient {
 		requestBuilder.setMoodId(moodId);
 		
 		this.executeVoidMessage(URI_ACTIVATE_MOOD, requestBuilder.build());
+	}
+	
+	public final void removeMood(final int moodId) throws IOException {
+		final Api.RemoveMood.Builder requestBuilder = Api.RemoveMood.newBuilder();
+		requestBuilder.setMoodId(moodId);
+		
+		this.executeVoidMessage(URI_REMOVE_MOOD, requestBuilder.build());
 	}
 }

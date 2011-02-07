@@ -202,6 +202,14 @@ public final class TCPDriver implements Driver {
 		
 		return null;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void removeMood(int id) throws IOException {
+		this.tcpClient.removeMood(id);
+	}
 	
 	
 }
