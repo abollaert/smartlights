@@ -90,6 +90,19 @@ final class MoodPanel extends JPanel {
 		}
 	});
 	
+	/** Button that activates a mood. */
+	private final JButton btnActivateMood = new JButton(new ActivateMoodAction() {
+		@Override
+		final Component getParentComponent() {
+			return MoodPanel.this;
+		}
+		
+		@Override
+		final Mood getMood() {
+			return MoodPanel.this.mood;
+		}
+	});
+	
 	private final void addDimElementPanel(final DimMoodElement element) {
 		final DimmerMoodElementPanel elementPanel = new DimmerMoodElementPanel(driver, mood) {
 			@Override
@@ -166,6 +179,7 @@ final class MoodPanel extends JPanel {
 		this.buttonPanel.add(this.btnSave);
 		this.buttonPanel.add(this.btnAddDigitalElement);
 		this.buttonPanel.add(this.btnAddDimmerElement);
+		this.buttonPanel.add(this.btnActivateMood);
 		
 		this.elementsPanel.setLayout(new BoxLayout(this.elementsPanel, BoxLayout.Y_AXIS));
 		this.elementsPanel.setBorder(BorderFactory.createTitledBorder("Elements"));
