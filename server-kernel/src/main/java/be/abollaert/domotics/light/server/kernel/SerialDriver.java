@@ -133,4 +133,12 @@ public final class SerialDriver extends AbstractDriver {
 		
 		return null;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void removeMood(final int id) throws IOException {
+		this.getStorage().removeMood(id);
+	}
 }

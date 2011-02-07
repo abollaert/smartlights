@@ -78,4 +78,11 @@ public interface Driver {
 	 * @return		The given mood.
 	 */
 	Mood getMoodWithID(final int id);
+	
+	/**
+	 * Removes the mood with the given ID.
+	 * 
+	 * @param 	id		The ID of the mood to remove.
+	 */
+	void removeMood(final int id) throws IOException;
 }
