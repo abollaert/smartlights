@@ -1,7 +1,6 @@
 package be.abollaert.domotics.light.servers.tcp.api;
 
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.abollaert.domotics.light.api.Mood;
