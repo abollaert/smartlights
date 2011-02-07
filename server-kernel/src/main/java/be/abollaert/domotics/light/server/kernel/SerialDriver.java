@@ -139,6 +139,20 @@ public final class SerialDriver extends AbstractDriver {
 	 */
 	@Override
 	public final void removeMood(final int id) throws IOException {
-		this.getStorage().removeMood(id);
+		final Mood matchingMood = this.getMoodWithID(id);
+		
+		if (matchingMood != null) {
+			this.getStorage().removeMood(id);
+			this.moods.remove(matchingMood);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public final Mood getNewMood(final String name) {
+		final Mood newMood = new MoodImpl(-1, name, this, this.getStorage());
+		this.moods.add(newMood);
+		return newMood;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
 
 /**
@@ -26,8 +27,8 @@ abstract class SaveMoodAction extends BaseAction {
 	/**
 	 * Create a new save mood action.
 	 */
-	SaveMoodAction() {
-		super("Save");
+	SaveMoodAction(final Driver driver) {
+		super(driver, "Save");
 	}
 
 	/**

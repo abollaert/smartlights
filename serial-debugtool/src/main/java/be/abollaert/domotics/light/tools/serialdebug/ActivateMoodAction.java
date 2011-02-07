@@ -3,6 +3,7 @@ package be.abollaert.domotics.light.tools.serialdebug;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
+import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
 
 abstract class ActivateMoodAction extends BaseAction {
@@ -10,8 +11,8 @@ abstract class ActivateMoodAction extends BaseAction {
 	/**
 	 * Create a new instance.
 	 */
-	ActivateMoodAction() {
-		super("Activate");
+	ActivateMoodAction(final Driver driver) {
+		super(driver, "Activate");
 	}
 
 	/**

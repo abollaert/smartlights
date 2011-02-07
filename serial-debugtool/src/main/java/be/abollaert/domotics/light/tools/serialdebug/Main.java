@@ -35,7 +35,7 @@ public final class Main {
 	 * @author alex
 	 *
 	 */
-	private static final class MainFrame extends JFrame {
+	private static final class MainFrame extends JFrame implements ModelListener {
 		
 		/** Logger instance. */
 		private static final Logger logger = Logger.getLogger(Main.MainFrame.class.getName());
@@ -46,7 +46,7 @@ public final class Main {
 		/** The JSplitPane. */
 		private final JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		
-		private JTree tree;
+		private InstallationTree tree;
 		
 		/** The empty panel. */
 		private final JPanel holderPanel = new JPanel();
@@ -92,6 +92,8 @@ public final class Main {
 				this.splitPane.setOneTouchExpandable(true);
 				this.add(this.splitPane, BorderLayout.CENTER);
 				
+				EventDispatcher.getInstance().addModelListener(this);
+				
 				this.pack();
 				this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 			} catch (IOException e) {
@@ -111,7 +113,7 @@ public final class Main {
 		private final void createTree() throws IOException {
 			final TreeNode rootNode = new StringTreeNode(NodeType.ROOT, "This installation", null);
 			
-			this.tree = new JTree();
+			this.tree = new InstallationTree();
 			
 			final TreeNode devicesNode = new StringTreeNode(NodeType.DETECTED_DEVICES, "Detected devices", this.getTreeModel());
 			final TreeNode digitalModulesNode = new StringTreeNode(NodeType.DIGITAL_DEVICES, "Digital Modules", this.getTreeModel());
@@ -198,6 +200,17 @@ public final class Main {
 		
 		private final DefaultTreeModel getTreeModel() {
 			return (DefaultTreeModel)this.tree.getModel();
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public final void modelChanged(ModelEvent<?> modelEvent) {
+			if (modelEvent.getType() == ModelEvent.Type.REMOVE) {
+				System.out.println("Show null");
+				this.showPanel(null);
+			}
 		}
 	}
 	

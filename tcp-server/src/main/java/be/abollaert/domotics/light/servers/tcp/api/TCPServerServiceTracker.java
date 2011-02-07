@@ -65,6 +65,7 @@ final class TCPServerServiceTracker extends ServiceTracker {
 		this.handlers.add(new GetSwitchEventsHandler());
 		this.handlers.add(new GetAllMoodsHandler());
 		this.handlers.add(new ActivateMoodHandler());
+		this.handlers.add(new RemoveMoodHandler());
 	}
 
 	/**

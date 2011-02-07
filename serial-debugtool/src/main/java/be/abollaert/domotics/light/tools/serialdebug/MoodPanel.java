@@ -91,7 +91,7 @@ final class MoodPanel extends JPanel {
 	});
 	
 	/** Button that activates a mood. */
-	private final JButton btnActivateMood = new JButton(new ActivateMoodAction() {
+	private final JButton btnActivateMood = new JButton(new ActivateMoodAction(this.driver) {
 		@Override
 		final Component getParentComponent() {
 			return MoodPanel.this;
@@ -102,6 +102,8 @@ final class MoodPanel extends JPanel {
 			return MoodPanel.this.mood;
 		}
 	});
+	
+	private final JButton btnRemoveMood;
 	
 	private final void addDimElementPanel(final DimMoodElement element) {
 		final DimmerMoodElementPanel elementPanel = new DimmerMoodElementPanel(driver, mood) {
@@ -137,7 +139,7 @@ final class MoodPanel extends JPanel {
 	private Mood mood;
 	
 	/** The driver. */
-	private Driver driver;
+	private final Driver driver;
 	
 	MoodPanel(final Driver driver) {
 		super();
@@ -145,7 +147,7 @@ final class MoodPanel extends JPanel {
 		this.driver = driver;
 		this.moodInfoPanel = new MoodInfoPanel();
 		
-		this.btnSave = new JButton(new SaveMoodAction() {
+		this.btnSave = new JButton(new SaveMoodAction(this.driver) {
 			@Override
 			final Component getParentComponent() {
 				return MoodPanel.this;
@@ -176,10 +178,23 @@ final class MoodPanel extends JPanel {
 			}
 		});
 		
+		this.btnRemoveMood = new JButton(new RemoveMoodAction(this.driver) {
+			@Override
+			final Component getParentComponent() {
+				return MoodPanel.this;
+			}
+			
+			@Override
+			final Mood getMoodToDelete() {
+				return MoodPanel.this.mood;
+			}
+		});
+		
 		this.buttonPanel.add(this.btnSave);
 		this.buttonPanel.add(this.btnAddDigitalElement);
 		this.buttonPanel.add(this.btnAddDimmerElement);
 		this.buttonPanel.add(this.btnActivateMood);
+		this.buttonPanel.add(this.btnRemoveMood);
 		
 		this.elementsPanel.setLayout(new BoxLayout(this.elementsPanel, BoxLayout.Y_AXIS));
 		this.elementsPanel.setBorder(BorderFactory.createTitledBorder("Elements"));

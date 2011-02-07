@@ -132,11 +132,4 @@ public abstract class AbstractDriver implements Driver {
 	final Storage getStorage() {
 		return this.storage;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final Mood getNewMood(final String name) {
-		return new MoodImpl(-1, name, this, this.storage);
-	}
 }

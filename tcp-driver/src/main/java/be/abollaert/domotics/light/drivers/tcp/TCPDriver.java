@@ -23,8 +23,8 @@ import be.abollaert.domotics.light.protocolbuffers.Api;
 public final class TCPDriver implements Driver {
 
 	/** The server address. */
-	//private static final String SERVER_ADDRESS = "192.168.100.1";
-	private static final String SERVER_ADDRESS = "127.0.0.1";
+	private static final String SERVER_ADDRESS = "192.168.100.1";
+	//private static final String SERVER_ADDRESS = "127.0.0.1";
 	
 	/** The server port. */
 	private static final int SERVER_PORT = 8080;
@@ -132,8 +132,6 @@ public final class TCPDriver implements Driver {
 			for (final Api.DimmerMoodElement element : mood.getDimmerElementsList()) {
 				newMood.addDimElement(element.getModuleId(), element.getChannelNumber(), element.getPercentage());
 			}
-			
-			this.moods.add(newMood);
 		}
 	}
 
@@ -185,6 +183,8 @@ public final class TCPDriver implements Driver {
 		final MoodImpl mood = new MoodImpl(this.tcpClient);
 		mood.setName(name);
 		mood.setId(-1);
+		
+		this.moods.add(mood);
 		
 		return mood;
 	}
