@@ -2,6 +2,8 @@ package be.abollaert.domotics.light.servers.tcp.api;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +20,7 @@ import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.protocolbuffers.Api;
 import be.abollaert.domotics.light.protocolbuffers.Api.MessageResponse;
 
+import com.google.protobuf.JsonFormat;
 import com.google.protobuf.Message;
 
 /**
@@ -26,7 +29,74 @@ import com.google.protobuf.Message;
  * @author alex
  */
 abstract class AbstractHandler extends HttpServlet {
+	
+	/** Name of the format parameter. */
+	private static final String PARAM_FORMAT = "format";
 
+	private enum Format {
+		RAW("raw") {
+			@Override
+			final void marshal(final Message message, final OutputStream stream) throws IOException {
+				if (stream != null) {
+					try {
+						message.writeTo(stream);
+						stream.flush();
+					} finally {
+							try {
+								stream.close();
+							} catch (IOException e) {
+								if (logger.isLoggable(Level.WARNING)) {
+									logger.log(Level.WARNING, "IO error while closing writer : [" + e.getMessage() + "]", e);
+								}
+							}
+					}
+				}
+			}
+		}, JSON("json") {
+			@Override
+			final void marshal(final Message message, final OutputStream stream) throws IOException {
+				if (stream != null && message != null) {
+					final String jsonOutput = JsonFormat.printToString(message);
+					
+					OutputStreamWriter writer = null;
+					
+					try {
+						writer = new OutputStreamWriter(stream);
+						writer.write(jsonOutput);
+						writer.flush();
+					} finally {
+						if (writer != null) {
+							try {
+								writer.close();
+							} catch (IOException e) {
+								if (logger.isLoggable(Level.WARNING)) {
+									logger.log(Level.WARNING, "IO error while closing writer : [" + e.getMessage() + "]", e);
+								}
+							}
+						}
+					}
+				}
+			}
+		};
+		
+		private final String value;
+		
+		private Format(final String value) {
+			this.value = value;
+		}
+		
+		abstract void marshal(final Message message, final OutputStream stream) throws IOException;
+		
+		private static final Format byValue(final String value) {
+			for (final Format format : Format.values()) {
+				if (format.value.equals(value)) {
+					return format;
+				}
+			}
+			
+			return null;
+		}
+	}
 	/** Serial version UID. */
 	private static final long serialVersionUID = 1L;
 
@@ -98,6 +168,16 @@ abstract class AbstractHandler extends HttpServlet {
 	 */
 	@Override
 	protected final void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+		Format format = Format.byValue(req.getParameter(PARAM_FORMAT));
+		
+		if (format == null) {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.log(Level.INFO, "No format specified, using [" + Format.RAW + "] format.");
+			}
+			
+			format = Format.RAW;
+		}
+		
 		final byte[] payload = getPayload(req);
 		Message request = null;
 		
@@ -120,11 +200,8 @@ abstract class AbstractHandler extends HttpServlet {
 		}
 		
 		if (response != null) {
-			response.writeTo(resp.getOutputStream());
-			resp.getOutputStream().flush();
+			format.marshal(response, resp.getOutputStream());
 		}
-		
-		resp.getOutputStream().close();
 	}
 	
 	/**
