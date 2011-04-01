@@ -11,6 +11,7 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 import org.osgi.util.tracker.ServiceTracker;
 
 import be.abollaert.domotics.light.api.Driver;
@@ -105,6 +106,12 @@ final class TCPServerServiceTracker extends ServiceTracker {
 				
 				for (final AbstractHandler handler : this.handlers) {
 					handler.register(this.httpService, context, this.driver);
+				}
+				
+				try {
+					this.httpService.registerResources("/mobile", "/mobile", context);
+				} catch (NamespaceException e) {
+					e.printStackTrace();
 				}
 			}
 		}
