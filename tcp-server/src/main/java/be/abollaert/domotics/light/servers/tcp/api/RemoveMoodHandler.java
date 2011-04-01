@@ -1,7 +1,6 @@
 package be.abollaert.domotics.light.servers.tcp.api;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import be.abollaert.domotics.light.api.Mood;
 import be.abollaert.domotics.light.protocolbuffers.Api;
@@ -21,10 +20,6 @@ final class RemoveMoodHandler extends AbstractHandler {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/** Logger definition. */
-	private static final Logger logger = Logger
-			.getLogger(RemoveMoodHandler.class.getName());
 	
 	/** URI. */
 	private static final String URI = "/api/RemoveMood";
