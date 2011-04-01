@@ -90,6 +90,8 @@ public final class TCPClient {
 	
 	private static final String URI_REMOVE_MOOD = "/api/RemoveMood";
 	
+	private static final String URI_ALL_LIGHTS_OFF = "/api/AllLightsOff";
+	
 	/** The HTTP client. */
 	private HttpClient httpClient;
 	
@@ -510,5 +512,14 @@ public final class TCPClient {
 		requestBuilder.setMoodId(moodId);
 		
 		this.executeVoidMessage(URI_REMOVE_MOOD, requestBuilder.build());
+	}
+	
+	/**
+	 * Switch all lights off.
+	 * 
+	 * @throws 	IOException		If an IO error occurs.
+	 */
+	public final void allLightsOff() throws IOException {
+		this.executeVoidMessage(URI_ALL_LIGHTS_OFF, null);
 	}
 }
