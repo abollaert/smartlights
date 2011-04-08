@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.abollaert.domotics.light.api.ChannelState;
+import be.abollaert.domotics.light.api.DigitalModule;
+import be.abollaert.domotics.light.api.DimmerModule;
 import be.abollaert.domotics.light.api.Mood;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredDimMoodElement;
@@ -154,5 +157,23 @@ public final class SerialDriver extends AbstractDriver {
 		final Mood newMood = new MoodImpl(-1, name, this, this.getStorage());
 		this.moods.add(newMood);
 		return newMood;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void allLightsOff() throws IOException {
+		for (final DigitalModule digitalModule : this.getAllDigitalModules()) {
+			for (int channel = 0; channel < digitalModule.getDigitalConfiguration().getNumberOfChannels(); channel++) {
+				digitalModule.switchOutputChannel(channel, ChannelState.OFF);
+			}
+		}
+		
+		for (final DimmerModule dimmerModule : this.getAllDimmerModules()) {
+			for (int channel = 0; channel < dimmerModule.getDimmerConfiguration().getNumberOfChannels(); channel++) {
+				dimmerModule.switchOutputChannel(channel, ChannelState.OFF);
+			}
+		}
 	}
 }

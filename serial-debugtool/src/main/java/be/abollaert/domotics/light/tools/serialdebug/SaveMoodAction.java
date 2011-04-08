@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.domotics.light.tools.serialdebug.action.BaseAction;
 
 /**
  * Action that is attached to a Save Mood operation.

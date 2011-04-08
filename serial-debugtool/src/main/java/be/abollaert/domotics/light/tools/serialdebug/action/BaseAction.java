@@ -1,4 +1,4 @@
-package be.abollaert.domotics.light.tools.serialdebug;
+package be.abollaert.domotics.light.tools.serialdebug.action;
 
 import java.awt.Component;
 import java.util.Collections;
@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 import be.abollaert.domotics.light.api.Driver;
 
-abstract class BaseAction extends AbstractAction {
+public abstract class BaseAction extends AbstractAction {
 
 	/**
 	 * 
@@ -26,21 +26,21 @@ abstract class BaseAction extends AbstractAction {
 	/**
 	 * Create a new save mood action.
 	 */
-	BaseAction(final Driver driver, final String name) {
+	protected BaseAction(final Driver driver, final String name) {
 		super(name);
 		
 		this.driver = driver;
 	}
 	
-	final void showError(final String title, final String message) {
+	protected final void showError(final String title, final String message) {
 		JOptionPane.showMessageDialog(this.getParentComponent(), message, title, JOptionPane.ERROR_MESSAGE);
 	}
 	
-	final void showError(final String title, final Exception e) {
+	protected final void showError(final String title, final Exception e) {
 		this.showError(title, e.getMessage());
 	}
 	
-	final void showError(final Exception e) {
+	protected final void showError(final Exception e) {
 		this.showError("Error while executing action.", e.getMessage());
 	}
 	
@@ -49,12 +49,12 @@ abstract class BaseAction extends AbstractAction {
 	 * 
 	 * @return	The parent component.
 	 */
-	abstract Component getParentComponent();
+	protected abstract Component getParentComponent();
 	
-	void afterSuccess() {
+	protected void afterSuccess() {
 	}
 	
-	void afterError() {
+	protected void afterError() {
 	}
 	
 	/**
@@ -62,7 +62,7 @@ abstract class BaseAction extends AbstractAction {
 	 * 
 	 * @return	The driver.
 	 */
-	final Driver getDriver() {
+	protected final Driver getDriver() {
 		return this.driver;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.domotics.light.tools.serialdebug.action.BaseAction;
 
 abstract class ActivateMoodAction extends BaseAction {
 	

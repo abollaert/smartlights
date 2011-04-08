@@ -85,4 +85,11 @@ public interface Driver {
 	 * @param 	id		The ID of the mood to remove.
 	 */
 	void removeMood(final int id) throws IOException;
+	
+	/**
+	 * Switches all the lights off.
+	 * 
+	 * @throws 	IOException		If an IO error occurs.
+	 */
+	void allLightsOff() throws IOException;
 }

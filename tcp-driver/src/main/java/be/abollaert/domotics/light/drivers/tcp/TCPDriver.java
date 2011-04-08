@@ -210,6 +210,12 @@ public final class TCPDriver implements Driver {
 	public final void removeMood(int id) throws IOException {
 		this.tcpClient.removeMood(id);
 	}
-	
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void allLightsOff() throws IOException {
+		this.tcpClient.allLightsOff();
+	}
 }

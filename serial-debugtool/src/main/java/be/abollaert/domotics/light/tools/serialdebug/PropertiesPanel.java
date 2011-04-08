@@ -8,9 +8,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
-import com.sun.rowset.internal.InsertRow;
-
 class PropertiesPanel extends JPanel {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private final GridBagConstraints constraints = new GridBagConstraints();
 	

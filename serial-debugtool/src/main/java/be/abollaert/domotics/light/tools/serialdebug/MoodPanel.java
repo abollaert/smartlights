@@ -93,7 +93,7 @@ final class MoodPanel extends JPanel {
 	/** Button that activates a mood. */
 	private final JButton btnActivateMood = new JButton(new ActivateMoodAction(this.driver) {
 		@Override
-		final Component getParentComponent() {
+		public final Component getParentComponent() {
 			return MoodPanel.this;
 		}
 		
@@ -149,7 +149,7 @@ final class MoodPanel extends JPanel {
 		
 		this.btnSave = new JButton(new SaveMoodAction(this.driver) {
 			@Override
-			final Component getParentComponent() {
+			protected final Component getParentComponent() {
 				return MoodPanel.this;
 			}
 			
@@ -173,14 +173,14 @@ final class MoodPanel extends JPanel {
 			}
 
 			@Override
-			final void afterSuccess() {
+			protected final void afterSuccess() {
 				moodInfoPanel.setMood(mood);
 			}
 		});
 		
 		this.btnRemoveMood = new JButton(new RemoveMoodAction(this.driver) {
 			@Override
-			final Component getParentComponent() {
+			protected final Component getParentComponent() {
 				return MoodPanel.this;
 			}
 			

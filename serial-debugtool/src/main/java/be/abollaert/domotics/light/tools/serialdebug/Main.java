@@ -1,6 +1,7 @@
 package be.abollaert.domotics.light.tools.serialdebug;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -9,10 +10,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 
 import be.abollaert.domotics.light.api.DigitalModule;
@@ -21,6 +24,7 @@ import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.api.Mood;
 import be.abollaert.domotics.light.drivers.tcp.TCPDriver;
 import be.abollaert.domotics.light.tools.serialdebug.TreeNode.NodeType;
+import be.abollaert.domotics.light.tools.serialdebug.action.AllLightsOffAction;
 
 /**
  * Main class.
@@ -37,6 +41,11 @@ public final class Main {
 	 */
 	private static final class MainFrame extends JFrame implements ModelListener {
 		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 754837235737954785L;
+
 		/** Logger instance. */
 		private static final Logger logger = Logger.getLogger(Main.MainFrame.class.getName());
 		
@@ -93,6 +102,8 @@ public final class Main {
 				this.add(this.splitPane, BorderLayout.CENTER);
 				
 				EventDispatcher.getInstance().addModelListener(this);
+				
+				this.setJMenuBar(this.createMenu());
 				
 				this.pack();
 				this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
@@ -202,6 +213,23 @@ public final class Main {
 			return (DefaultTreeModel)this.tree.getModel();
 		}
 
+		private final JMenuBar createMenu() {
+			final JMenu generalMenu = new JMenu("General");
+			
+			final JMenuItem allOffMenuItem = new JMenuItem(new AllLightsOffAction(this.driver) {
+				@Override
+				protected final Component getParentComponent() {
+					return MainFrame.this;
+				}
+			});
+			
+			generalMenu.add(allOffMenuItem);
+			
+			final JMenuBar menuBar = new JMenuBar();
+			menuBar.add(generalMenu);
+			
+			return menuBar;
+		}
 		/**
 		 * {@inheritDoc}
 		 */

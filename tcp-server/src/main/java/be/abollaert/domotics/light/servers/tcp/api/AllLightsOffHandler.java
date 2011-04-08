@@ -26,17 +26,7 @@ final class AllLightsOffHandler extends AbstractHandler {
 	 */
 	@Override
 	final Message processRequest(final Message request) throws IOException {
-		for (final DigitalModule digitalModule : this.getDriver().getAllDigitalModules()) {
-			for (int channel = 0; channel < digitalModule.getDigitalConfiguration().getNumberOfChannels(); channel++) {
-				digitalModule.switchOutputChannel(channel, ChannelState.OFF);
-			}
-		}
-		
-		for (final DimmerModule dimmerModule : this.getDriver().getAllDimmerModules()) {
-			for (int channel = 0; channel < dimmerModule.getDimmerConfiguration().getNumberOfChannels(); channel++) {
-				dimmerModule.switchOutputChannel(channel, ChannelState.OFF);
-			}
-		}
+		this.getDriver().allLightsOff();
 		
 		return createOKResponse();
 	}
