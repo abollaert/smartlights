@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+		 	  android:orientation="vertical"
+		 	  android:layout_width="fill_parent"
+		 	  android:layout_height="fill_parent"
+		 	  android:padding="15px">
+	<Button android:id="@+id/btnMoods"
+			android:text="Moods" android:layout_width="match_parent" android:layout_height="wrap_content" android:textStyle="bold"/>
+	
+	<Button android:id="@+id/btnDigitalChannels"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Digital channels" android:textStyle="bold"/>
+	
+	<Button android:id="@+id/btnDimmerChannels"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Dimmer channels" android:textStyle="bold"/>
+	
+	<Button android:id="@+id/btnExtra"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="Extra" android:textStyle="bold"/>
 </LinearLayout>

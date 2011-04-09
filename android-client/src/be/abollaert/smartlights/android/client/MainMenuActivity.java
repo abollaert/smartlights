@@ -1,15 +1,10 @@
 package be.abollaert.smartlights.android.client;
 
-import java.io.IOException;
-
-import android.app.Activity;
-import android.content.Context;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.MulticastLock;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.ListView;
-import be.abollaert.domotics.light.drivers.tcp.TCPDriver;
+import android.view.View;
+import android.widget.Button;
+import be.abollaert.smartlights.R;
 
 /**
  * Main entry point of the application.
@@ -17,13 +12,7 @@ import be.abollaert.domotics.light.drivers.tcp.TCPDriver;
  * @author alex
  * 
  */
-public final class MainMenuActivity extends Activity {
-
-	/** The TCP client. */
-	private TCPDriver driver;
-
-	/** The multicast lock. */
-	private MulticastLock multicastLock;
+public final class MainMenuActivity extends BaseActivity {
 
 	/**
 	 * {@inheritDoc}
@@ -31,35 +20,26 @@ public final class MainMenuActivity extends Activity {
 	@Override
 	protected final void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		final WifiManager wifiManager = (WifiManager)this.getSystemService(Context.WIFI_SERVICE);
-		
-		System.out.println("Acquire lock.");
-		
-		this.multicastLock = wifiManager.createMulticastLock("smartlights");
-		this.multicastLock.acquire();
-		
-		this.driver = new TCPDriver();
-		
-		try {
-			this.driver.probe();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
- 
-		System.out.println(this.driver.getAllDigitalModules().size());
-		
-		final ListView contentView = new ListView(this);
-		this.setContentView(contentView);
-		
-		contentView.setAdapter(new ChannelListAdapter(this, this.driver));
+		this.setTitle("Smartlights");
+		this.setContentView(R.layout.main);
+		this.setupButtonListeners();
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void onDestroy() {
-		super.onDestroy();
+	
+	private final void setupButtonListeners() {
+		final Button moodsButton = (Button)this.findViewById(R.id.btnMoods);
+		moodsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public final void onClick(final View v) {
+				startActivity(new Intent(MainMenuActivity.this, ShowMoodsActivity.class));
+			}
+		});
+		
+		final Button digitalChannelsButton = (Button)this.findViewById(R.id.btnDigitalChannels);
+		digitalChannelsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public final void onClick(final View v) {
+				startActivity(new Intent(MainMenuActivity.this, DigitalChannelsActivity.class));
+			}
+		});
 	}
 }
