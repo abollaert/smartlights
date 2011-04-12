@@ -89,6 +89,8 @@ public final class DigitalChannelsActivity extends BaseActivity {
 	
 	@Override
 	protected final void onDestroy() {
+		super.onDestroy();
+		
 		for (final DigitalModule module : this.listeners.keySet()) {
 			module.removeChannelStateListener(this.listeners.get(module));
 		}

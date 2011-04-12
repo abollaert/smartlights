@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.smartlights.R;
 
 /**
  * Activity to show all the moods.
@@ -42,6 +43,7 @@ public final class ShowMoodsActivity extends BaseActivity {
 						button = (Button)convertView;
 					} else {
 						button = new Button(ShowMoodsActivity.this);
+						button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.mood, 0, 0, 0);
 					}
 					
 					final Mood mood = moods.get(position);

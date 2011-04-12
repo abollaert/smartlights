@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="be.abollaert.smartlights" android:versionCode="1"
 	android:versionName="1.0" android:installLocation="preferExternal">
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:name=".android.client.SmartlightsApplication">
+	<application android:label="@string/app_name" android:name=".android.client.SmartlightsApplication" android:icon="@drawable/smartlights">
 		<activity android:name=".android.client.MainMenuActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -12,6 +12,8 @@
 		<activity android:name=".android.client.ShowMoodsActivity">
 		</activity>
 		<activity android:name=".android.client.DigitalChannelsActivity"></activity>
+		<activity android:name=".android.client.DimmerChannelsActivity"></activity>
+		<activity android:name=".android.client.ExtraActivity"></activity>
 	</application>
 
 	<uses-sdk android:minSdkVersion="8" />

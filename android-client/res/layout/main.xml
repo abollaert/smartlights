@@ -6,20 +6,20 @@
 		 	  android:layout_height="fill_parent"
 		 	  android:padding="15px">
 	<Button android:id="@+id/btnMoods"
-			android:text="Moods" android:layout_width="match_parent" android:layout_height="wrap_content" android:textStyle="bold"/>
+			android:text="Moods" android:layout_width="match_parent" android:layout_height="wrap_content" android:textStyle="bold" android:drawableLeft="@drawable/mood"/>
 	
 	<Button android:id="@+id/btnDigitalChannels"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Digital channels" android:textStyle="bold"/>
+			android:text="Digital channels" android:textStyle="bold"  android:drawableLeft="@drawable/icon_sw"/>
 	
 	<Button android:id="@+id/btnDimmerChannels"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Dimmer channels" android:textStyle="bold"/>
+			android:text="Dimmer channels" android:textStyle="bold"  android:drawableLeft="@drawable/icon_sw"/>
 	
 	<Button android:id="@+id/btnExtra"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="Extra" android:textStyle="bold"/>
+			android:text="Extra" android:textStyle="bold" android:drawableLeft="@drawable/extra"/>
 </LinearLayout>

@@ -41,5 +41,21 @@ public final class MainMenuActivity extends BaseActivity {
 				startActivity(new Intent(MainMenuActivity.this, DigitalChannelsActivity.class));
 			}
 		});
+		
+		final Button dimmerChannelsButton = (Button)this.findViewById(R.id.btnDimmerChannels);
+		dimmerChannelsButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public final void onClick(final View v) {
+				startActivity(new Intent(MainMenuActivity.this, DimmerChannelsActivity.class));
+			}
+		});
+		
+		final Button extraButton = (Button)this.findViewById(R.id.btnExtra);
+		extraButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public final void onClick(final View v) {
+				startActivity(new Intent(MainMenuActivity.this, ExtraActivity.class));
+			}
+		});
 	}
 }
