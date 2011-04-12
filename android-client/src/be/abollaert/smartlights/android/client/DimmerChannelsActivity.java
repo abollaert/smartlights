@@ -52,7 +52,7 @@ public final class DimmerChannelsActivity extends BaseActivity {
 				final TextView percentageView = (TextView)findViewById(percentageViewId);
 				
 				if (percentageView != null) {
-					checkBox.setText(String.valueOf(percentage));
+					percentageView.setText(String.valueOf(percentage));
 				}
 			}
 		};
