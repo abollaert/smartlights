@@ -22,6 +22,7 @@
 		<module>server-kernel</module>
 		<module>upgrade-service</module>
 		<module>protocolbuffers</module>
+		<module>webinterface</module>
 	</modules>
 
 	<build>

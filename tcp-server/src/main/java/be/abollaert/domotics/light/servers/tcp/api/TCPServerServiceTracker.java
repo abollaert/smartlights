@@ -77,6 +77,7 @@ final class TCPServerServiceTracker extends ServiceTracker {
 	public final Object addingService(ServiceReference reference) {
 		final Object svcObject = super.addingService(reference);
 		
+		System.out.println("TCP server [" + svcObject + "]");
 		if (svcObject != null) {
 			boolean changed = false;
 			
