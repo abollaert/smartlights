@@ -73,6 +73,8 @@
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 						<Bundle-Activator>be.abollaert.domotics.light.server.kernel.KernelActivator</Bundle-Activator>
 						<Import-Package>be.abollaert.domotics.light.api,org.osgi.framework</Import-Package>
+						<Implementation-Title>Smartlights Kernel</Implementation-Title> 
+                        <Implementation-Version>${pom.version}</Implementation-Version> 
 					</instructions>
 				</configuration>
 			</plugin>

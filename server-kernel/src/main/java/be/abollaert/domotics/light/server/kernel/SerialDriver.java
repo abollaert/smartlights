@@ -176,4 +176,12 @@ public final class SerialDriver extends AbstractDriver {
 			}
 		}
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getVersion() {
+		return this.getClass().getPackage().getImplementationVersion();
+	}
 }

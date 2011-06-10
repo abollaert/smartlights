@@ -11,37 +11,22 @@
 	</parent>
 
 	<groupId>be.abollaert.domotics.lights</groupId>
-	<artifactId>webinterface</artifactId>
-	<name>Web interface.</name>
+	<artifactId>zstack-driver</artifactId>
+	<name>ZStack driver</name>
 	<packaging>bundle</packaging>
 
 	<description>
-		Web based interface.
+		ZStack driver (Texas Instruments).
 	</description>
-
+	
 	<dependencies>
 		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>osgi_R4_core</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>osgi_R4_compendium</artifactId>
-			<version>1.0</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
+			<groupId>org.rxtx</groupId>
+			<artifactId>rxtx</artifactId>
+			<version>2.2pre2</version>
 		</dependency>
 	</dependencies>
-
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -50,11 +35,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Private-Package>
+						<!-- <Private-Package>
 							be.abollaert.domotics.light.webinterface
-						</Private-Package>
+						</Private-Package> 
 
-						<Bundle-Activator>be.abollaert.domotics.light.webinterface.WebInterfaceActivator</Bundle-Activator>
+						<Bundle-Activator>be.abollaert.domotics.light.webinterface.WebInterfaceActivator</Bundle-Activator> -->
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 					</instructions>
 				</configuration>

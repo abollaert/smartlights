@@ -218,4 +218,12 @@ public final class TCPDriver implements Driver {
 	public final void allLightsOff() throws IOException {
 		this.tcpClient.allLightsOff();
 	}
+
+	/**
+	 * @return
+	 */
+	@Override
+	public final String getVersion() {
+		return this.getClass().getPackage().getImplementationVersion();
+	}
 }

@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The driver is usually the main entry point of the API. Create a new driver, and call {@link #probe()} to initialize. Call {@link #unload()} to disconnect.
+ * 
+ * @author alex
+ */
 public interface Driver {
 
 	/**
@@ -92,4 +97,11 @@ public interface Driver {
 	 * @throws 	IOException		If an IO error occurs.
 	 */
 	void allLightsOff() throws IOException;
+	
+	/**
+	 * Returns the driver version.
+	 * 
+	 * @return	The driver version.
+	 */
+	String getVersion();
 }
