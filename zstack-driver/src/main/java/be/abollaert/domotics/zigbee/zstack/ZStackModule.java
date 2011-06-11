@@ -10,4 +10,6 @@ public interface ZStackModule {
 	void connect() throws ZStackException;
 	
 	String getFirmwareVersion() throws ZStackException;
+
+	void disconnect() throws ZStackException;
 }

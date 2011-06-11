@@ -30,8 +30,7 @@ final class ZStackModuleImpl implements ZStackModule {
 	static final int SOF = 0xFE;
 	
 	/** Logger definition. */
-	private static final Logger logger = Logger
-			.getLogger(ZStackModuleImpl.class.getName());
+	private static final Logger logger = Logger.getLogger(ZStackModuleImpl.class.getName());
 
 	/** The serial port name. */
 	private final String serialPortName;
@@ -81,7 +80,7 @@ final class ZStackModuleImpl implements ZStackModule {
 			
 			if (current.getPortType() == CommPortIdentifier.PORT_SERIAL && current.getName().equals(this.serialPortName)) {
 				try {
-					this.serialPort = (SerialPort)current.open("ZStack Driver", 2000);
+					this.serialPort = (SerialPort)current.open("ZStack Driver", 1000);
 					this.serialPort.setSerialPortParams(this.baudRate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
 					
 					this.responseReader = new ResponseReader(this.serialPort.getInputStream());
@@ -101,13 +100,6 @@ final class ZStackModuleImpl implements ZStackModule {
 					throw new ZStackException("Failed to open serial port connected to the dongle [" + this.serialPortName + ", error getting input stream.", e);
 				}
 			}
-		}
-	}
-	
-	private final void stopResponseReader() {
-		if (this.responseReaderThread != null) {
-			this.responseReader.active = false;
-			this.responseReaderThread.interrupt();
 		}
 	}
 
@@ -269,83 +261,85 @@ final class ZStackModuleImpl implements ZStackModule {
 				try {
 					final int byteRead = this.inputStream.read();
 					
-					switch (this.protocolState) {
-						case WAITING_FOR_SOF: {
-							if (byteRead == SOF) {
-								this.protocolState = ProtocolState.WAITING_FOR_FRAME_LENGTH;
-								this.currentFrameLength = 0;
-							}
-							
-							break;
-						}
-						
-						case WAITING_FOR_FRAME_LENGTH: {
-							this.currentFrameLength = (byteRead & 0xFF);
-							
-							this.protocolState = ProtocolState.WAITING_FOR_COMMAND;
-							this.currentCommandId = 0;
-							
-							break;
-						}
-						
-						case WAITING_FOR_COMMAND: {
-							this.currentCommandId += (byteRead) << 8;
-							this.protocolState = ProtocolState.READING_COMMAND;
-							
-							break;
-						}
-						
-						case READING_COMMAND: {
-							this.currentCommandId += (byteRead);
-							this.protocolState = ProtocolState.READING_DATA;
-							
-							if (this.currentFrameLength == 0) {
-								this.protocolState = ProtocolState.WAITING_FOR_CHECKSUM;
-							} else {
-								this.protocolState = ProtocolState.READING_DATA;
-								this.frameData = new int[this.currentFrameLength];
-								this.dataOffset = 0;
-							}
-							
-							break;
-						}
-						
-						case READING_DATA: {
-							this.frameData[this.dataOffset] = byteRead;
-							dataOffset++;
-							
-							if (dataOffset == this.currentFrameLength) {
-								this.protocolState = ProtocolState.WAITING_FOR_CHECKSUM;
-							}
-							
-							break;
-						}
-						
-						case WAITING_FOR_CHECKSUM: {
-							// The length also needs to be included in the checksum.
-							final int[] frameDataCoveredByFCS = new int[3 + this.frameData.length];
-							frameDataCoveredByFCS[0] = this.currentFrameLength;
-							frameDataCoveredByFCS[1] = (this.currentCommandId & 0xFF00) >> 8;
-							frameDataCoveredByFCS[2] = this.currentCommandId & 0xFF;
-							
-							for (int i = 0; i < this.frameData.length; i++) {
-								frameDataCoveredByFCS[3 + i] = this.frameData[i];
-							}
-							
-							if (validateFCS(byteRead, frameDataCoveredByFCS)) {
-								if (logger.isLoggable(Level.INFO)) {
-									logger.log(Level.INFO, "Full frame received : API ID : [" + toHex(this.currentCommandId) + "], frame data : [" + asString(this.frameData) + "], FCS [" + toHex(byteRead) + "]");
+					if (byteRead != -1) {
+						switch (this.protocolState) {
+							case WAITING_FOR_SOF: {
+								if (byteRead == SOF) {
+									this.protocolState = ProtocolState.WAITING_FOR_FRAME_LENGTH;
+									this.currentFrameLength = 0;
 								}
 								
-								this.processFrame();
-							} else {
-								if (logger.isLoggable(Level.WARNING)) {
-									logger.log(Level.WARNING, "Received frame but FCS was not valid.");
-								}
+								break;
 							}
 							
-							this.protocolState = ProtocolState.WAITING_FOR_SOF;
-							break;
+							case WAITING_FOR_FRAME_LENGTH: {
+								this.currentFrameLength = (byteRead & 0xFF);
+								
+								this.protocolState = ProtocolState.WAITING_FOR_COMMAND;
+								this.currentCommandId = 0;
+								
+								break;
+							}
+							
+							case WAITING_FOR_COMMAND: {
+								this.currentCommandId += (byteRead) << 8;
+								this.protocolState = ProtocolState.READING_COMMAND;
+								
+								break;
+							}
+							
+							case READING_COMMAND: {
+								this.currentCommandId += (byteRead);
+								this.protocolState = ProtocolState.READING_DATA;
+								
+								if (this.currentFrameLength == 0) {
+									this.protocolState = ProtocolState.WAITING_FOR_CHECKSUM;
+								} else {
+									this.protocolState = ProtocolState.READING_DATA;
+									this.frameData = new int[this.currentFrameLength];
+									this.dataOffset = 0;
+								}
+								
+								break;
+							}
+							
+							case READING_DATA: {
+								this.frameData[this.dataOffset] = byteRead;
+								dataOffset++;
+								
+								if (dataOffset == this.currentFrameLength) {
+									this.protocolState = ProtocolState.WAITING_FOR_CHECKSUM;
+								}
+								
+								break;
+							}
+							
+							case WAITING_FOR_CHECKSUM: {
+								// The length also needs to be included in the checksum.
+								final int[] frameDataCoveredByFCS = new int[3 + this.frameData.length];
+								frameDataCoveredByFCS[0] = this.currentFrameLength;
+								frameDataCoveredByFCS[1] = (this.currentCommandId & 0xFF00) >> 8;
+								frameDataCoveredByFCS[2] = this.currentCommandId & 0xFF;
+								
+								for (int i = 0; i < this.frameData.length; i++) {
+									frameDataCoveredByFCS[3 + i] = this.frameData[i];
+								}
+								
+								if (validateFCS(byteRead, frameDataCoveredByFCS)) {
+									if (logger.isLoggable(Level.INFO)) {
+										logger.log(Level.INFO, "Full frame received : API ID : [" + toHex(this.currentCommandId) + "], frame data : [" + asString(this.frameData) + "], FCS [" + toHex(byteRead) + "]");
+									}
+									
+									this.processFrame();
+								} else {
+									if (logger.isLoggable(Level.WARNING)) {
+										logger.log(Level.WARNING, "Received frame but FCS was not valid.");
+									}
+								}
+								
+								this.protocolState = ProtocolState.WAITING_FOR_SOF;
+								break;
+							}
 						}
 					}
 				} catch (IOException e) {
@@ -445,12 +439,46 @@ final class ZStackModuleImpl implements ZStackModule {
 	public static void main(String[] args) throws Exception {
 		final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB0", 57600);
 		module.connect();
-		System.out.println(module.getFirmwareVersion());
 		
-		int[] test = new int[3];
-		test[0] = 145;
-		test[1] = 47;
-		test[2] = 74;
+		String firmwareVersion = module.getFirmwareVersion();
 		
+		if (logger.isLoggable(Level.INFO)) {
+			logger.log(Level.INFO, "Module firmware version is [" + firmwareVersion + "]");
+		}
+		
+		module.disconnect();
+		
+		module.connect();
+		
+		firmwareVersion = module.getFirmwareVersion();
+		
+		if (logger.isLoggable(Level.INFO)) {
+			logger.log(Level.INFO, "Module firmware version is [" + firmwareVersion + "]");
+		}
+		
+		module.disconnect();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void disconnect() throws ZStackException {
+		this.responseReader.active = false;
+		
+		try {
+			this.serialPort.getInputStream().close();
+		} catch (IOException e) {
+			if (logger.isLoggable(Level.WARNING)) {
+				logger.log(Level.WARNING, "IO error while closing the serial port input stream : [" + e.getMessage() + "]", e);
+			}
+		}
+		
+		this.responseReaderThread.interrupt();
+		
+		this.serialPort.close();
+		this.serialPort = null;
+		this.responseReaderThread = null;
+		this.responseReader = null;
 	}
 }
