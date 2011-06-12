@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -53,6 +55,9 @@ final class ZStackModuleImpl implements ZStackModule {
 	/** The command lock for thread safety. */
 	private final Lock commandLock = new ReentrantLock();
 	
+	/** For the reset, which is an asynchonous operation, we use a cyclic barrier. */
+	private final CyclicBarrier resetBarrier = new CyclicBarrier(2);
+	
 	/**
 	 * Create a new instance.
 	 */
@@ -86,6 +91,10 @@ final class ZStackModuleImpl implements ZStackModule {
 					this.responseReader = new ResponseReader(this.serialPort.getInputStream());
 					this.responseReaderThread = new Thread(this.responseReader, "ZStack : Response reader");
 					this.responseReaderThread.start();
+					
+					this.reset();
+					//this.configuration = new ZStackConfigurationImpl(this);
+					//this.configuration.read();
 				} catch (PortInUseException e) {
 					this.serialPort = null;
 					
@@ -182,7 +191,7 @@ final class ZStackModuleImpl implements ZStackModule {
 	 * 	
 	 * @return		A string representation of the frame.
 	 */
-	private static final String asString(final int[] frame) {
+	static final String asString(final int[] frame) {
 		final StringBuilder builder = new StringBuilder();
 		
 		int i = 0;
@@ -208,7 +217,7 @@ final class ZStackModuleImpl implements ZStackModule {
 		return builder.toString();
 	}
 	
-	private static final String toHex(final int aByte) {
+	static final String toHex(final int aByte) {
 		final StringBuilder builder = new StringBuilder("0x");
 		
 		final String currentByteString = Integer.toHexString(aByte);
@@ -379,6 +388,55 @@ final class ZStackModuleImpl implements ZStackModule {
 					
 					break;
 				}
+				
+				case ASYNCHRONOUS_REQUEST: {
+					final ZStackFrame request = new ZStackFrame(this.currentCommandId, this.frameData);
+					
+					if (request.getCommandID() == CommandID.SYSTEM_RESET_IND) {
+						if (logger.isLoggable(Level.INFO)) {
+							logger.log(Level.INFO, "Reset is complete, notifying barrier.");
+						}
+						
+						try {
+							resetBarrier.await();
+						} catch (InterruptedException e) {
+							if (logger.isLoggable(Level.WARNING)) {
+								logger.log(Level.WARNING, "Interrupted while notifying reset completion !", e);
+							}
+						} catch (BrokenBarrierException e) {
+							if (logger.isLoggable(Level.WARNING)) {
+								logger.log(Level.WARNING, "Broken barrier while waiting for reset to complete !", e);
+							}
+						}
+					} else if (request.getCommandID() == CommandID.AF_INCOMING_MESSAGE) {
+						if (logger.isLoggable(Level.INFO)) {
+							logger.log(Level.INFO, "Incoming message received.");
+						}
+						
+						final IncomingMessage message = new IncomingMessage(request.getPayload());
+						
+						if (logger.isLoggable(Level.INFO)) {
+							logger.log(Level.INFO, "Received an unsollicited message [" + message + "]");
+						}
+					} else if (request.getCommandID() == CommandID.ZDO_END_DEVICE_ANNCE_IND) {
+						int i = 0;
+						
+						final int sourceAddress = (request.getPayload()[i++] << 8) + (request.getPayload()[i++] & 0xFF);
+						final int shortAddress = (request.getPayload()[i++] << 8) + (request.getPayload()[i++] & 0xFF);
+						
+						final int[] ieeeAddress = new int[8];
+						System.arraycopy(request.getPayload(), i, ieeeAddress, 0, 8);
+						i+=8;
+						
+						int capabilities = request.getPayload()[i];
+						
+						if (logger.isLoggable(Level.INFO)) {
+							logger.log(Level.INFO, "New device has announced itself : short address [" + toHex(shortAddress) + "], IEEE address [" + asString(ieeeAddress) + "]");
+						}
+					}
+					
+					break;
+				}
 			}
 		}
 	}
@@ -439,24 +497,14 @@ final class ZStackModuleImpl implements ZStackModule {
 	public static void main(String[] args) throws Exception {
 		final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB0", 57600);
 		module.connect();
-		
-		String firmwareVersion = module.getFirmwareVersion();
-		
-		if (logger.isLoggable(Level.INFO)) {
-			logger.log(Level.INFO, "Module firmware version is [" + firmwareVersion + "]");
-		}
-		
-		module.disconnect();
-		
-		module.connect();
-		
-		firmwareVersion = module.getFirmwareVersion();
+		//module.disconnect();
+		/*String firmwareVersion = module.getFirmwareVersion();
 		
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "Module firmware version is [" + firmwareVersion + "]");
 		}
 		
-		module.disconnect();
+		final long ieeeAddress = module.getChannel();*/
 	}
 
 	/**
@@ -480,5 +528,57 @@ final class ZStackModuleImpl implements ZStackModule {
 		this.serialPort = null;
 		this.responseReaderThread = null;
 		this.responseReader = null;
+	}
+	
+	final void sendAsynchronousRequest(final ZStackFrame requestFrame) throws ZStackException {
+		if (this.serialPort != null) {
+			try {
+				this.commandLock.lock();
+				
+				final int[] frame = requestFrame.toWireFrame();
+				
+				if (logger.isLoggable(Level.INFO)) {
+					logger.log(Level.INFO, "Sending frame [" + asString(frame) + "]");
+				}
+				
+				for (int i = 0; i < frame.length; i++) {
+					this.serialPort.getOutputStream().write(frame[i] & 0xFF);
+				}
+				
+				this.serialPort.getOutputStream().flush();
+			} catch (IOException e) {
+				throw new ZStackException("IO error sending frame : [" + requestFrame + "]", e);
+			} finally {
+				this.commandLock.unlock();
+			}
+		} else {
+			throw new IllegalStateException("Serial port [" + this.serialPortName + "] is not open !");
+		}
+	}
+	
+	private final void reset() throws ZStackException {
+		if (logger.isLoggable(Level.INFO)) {
+			logger.log(Level.INFO, "Resetting dongle.");
+		}
+		
+		this.resetBarrier.reset();
+		
+		try {
+			this.commandLock.lock();
+			
+			this.sendAsynchronousRequest(new ZStackFrame(CommandID.SYSTEM_RESET, new int[] { 0 }));
+
+			this.resetBarrier.await();
+			
+			if (logger.isLoggable(Level.INFO)) {
+				logger.log(Level.INFO, "System reset complete.");
+			}
+		} catch (BrokenBarrierException e) {
+			throw new ZStackException("Reset barrier was broken while waiting for reset to complete !", e);
+		} catch (InterruptedException e) {
+			throw new ZStackException("Interrupted while waiting for barrier !", e);
+		} finally {
+			this.commandLock.unlock();
+		}
 	}
 }

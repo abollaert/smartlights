@@ -39,7 +39,7 @@ final class ZStackFrame {
 			frame[4 + i] = payload[i];
 		}
 		
-		final int fcs = ZStackModuleImpl.calculateFCS(frame, 2, frame.length - 3);
+		final int fcs = ZStackModuleImpl.calculateFCS(frame, 1, frame.length - 2);
 		frame[frameSize - 1] = (byte)(fcs & 0xFF);
 		
 		return frame;
