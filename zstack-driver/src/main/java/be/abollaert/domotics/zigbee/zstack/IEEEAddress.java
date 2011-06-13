@@ -35,4 +35,18 @@ public final class IEEEAddress {
 	public final int[] asByteArray() {
 		return this.address;
 	}
+	
+	public final String toString() {
+		final StringBuilder builder = new StringBuilder();
+		
+		for (int i = 0; i < this.address.length; i++) {
+			builder.append(ZStackUtils.asHex(this.address[i], false));
+			
+			if (i != this.address.length - 1) {
+				builder.append("-");
+			}
+		}
+		
+		return builder.toString();
+	}
 }

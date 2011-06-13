@@ -18,4 +18,20 @@ abstract class ZigbeeNode {
 	}
 	
 	abstract void reportAttributes(final int[] report);
+	
+	final int getShortAddress() {
+		return shortAddress;
+	}
+
+	final IEEEAddress getIeeeAddress() {
+		return ieeeAddress;
+	}
+
+	final int getEndPoint() {
+		return endPoint;
+	}
+
+	final ZStackModuleImpl getModule() {
+		return module;
+	}
 }

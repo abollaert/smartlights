@@ -27,7 +27,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>be.abollaert.domotics.light.api</Export-Package>
+						<Export-Package>be.abollaert.domotics.light.api.sensor</Export-Package>
 					</instructions>
 				</configuration>
 			</plugin>

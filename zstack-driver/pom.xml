@@ -24,6 +24,21 @@
 			<groupId>org.rxtx</groupId>
 			<artifactId>rxtx</artifactId>
 			<version>2.2pre2</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>be.abollaert.domotics.lights</groupId>
+			<artifactId>sensor-api</artifactId>
+			<version>${pom.version}</version>
+			<scope>provided</scope>
+		</dependency>
+				
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	
@@ -35,11 +50,11 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<!-- <Private-Package>
-							be.abollaert.domotics.light.webinterface
+						<Private-Package>
+							be.abollaert.domotics.zigbee.zstack
 						</Private-Package> 
 
-						<Bundle-Activator>be.abollaert.domotics.light.webinterface.WebInterfaceActivator</Bundle-Activator> -->
+						<Bundle-Activator>be.abollaert.domotics.zigbee.zstack.Activator</Bundle-Activator>
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 					</instructions>
 				</configuration>

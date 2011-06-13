@@ -7,9 +7,13 @@ import gnu.io.UnsupportedCommOperationException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
@@ -22,6 +26,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import be.abollaert.domotics.light.api.sensor.OccupancySensor;
 
 /**
  * {@link ZStackModuleImpl} is the main entry point to the Zigbee dongle.
@@ -71,6 +77,8 @@ final class ZStackModuleImpl implements ZStackModule {
 	
 	/** The zigbee nodes. */
 	private final Map<Integer, ZigbeeNode> nodes = new HashMap<Integer, ZigbeeNode>();
+	
+	private final Set<ZigbeeDeviceListener> listeners = Collections.newSetFromMap(new WeakHashMap<ZigbeeDeviceListener, Boolean>());
 	
 	/**
 	 * Create a new instance.
@@ -432,8 +440,12 @@ final class ZStackModuleImpl implements ZStackModule {
 							
 							switch (type) {
 								case OCCUPANCY: {
-									nodes.put(shortAddress, new OccupancySensor(shortAddress, address, 0x01, ZStackModuleImpl.this));
+									final ZigbeeOccupancySensor sensor = new ZigbeeOccupancySensor(shortAddress, address, 0x01, ZStackModuleImpl.this);
+									nodes.put(shortAddress, sensor);
 									
+									for (final ZigbeeDeviceListener listener : listeners) {
+										listener.occupancySensorAdded(sensor);
+									}
 									break;
 								}
 							}
@@ -620,5 +632,15 @@ final class ZStackModuleImpl implements ZStackModule {
 		
 		final ZStackFrame request = new ZStackFrame(CommandID.AF_DATA_REQUEST, frameData);
 		final ZStackFrame response = this.sendSynchonousRequest(request);
+	}
+
+	@Override
+	public final void addZigbeeDeviceListener(ZigbeeDeviceListener listener) {
+		this.listeners.add(listener);
+	}
+
+	@Override
+	public final void removeZigbeeDeviceListener(ZigbeeDeviceListener listener) {
+		this.listeners.remove(listener);
 	}
 }

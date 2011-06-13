@@ -12,4 +12,8 @@ public interface ZStackModule {
 	String getFirmwareVersion() throws ZStackException;
 
 	void disconnect() throws ZStackException;
+	
+	void addZigbeeDeviceListener(final ZigbeeDeviceListener listener);
+	
+	void removeZigbeeDeviceListener(final ZigbeeDeviceListener listener);
 }

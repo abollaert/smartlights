@@ -5,8 +5,8 @@ final class ZStackUtils {
 	private ZStackUtils() {
 	}
 
-	static final String asHex(final int aByte) {
-		final StringBuilder builder = new StringBuilder("0x");
+	static final String asHex(final int aByte, final boolean prepend0x) {
+		final StringBuilder builder = new StringBuilder(prepend0x ? "0x" : "");
 		
 		final String currentByteString = Integer.toHexString(aByte);
 		
@@ -17,6 +17,10 @@ final class ZStackUtils {
 		builder.append(currentByteString);
 		
 		return builder.toString();
+	}
+	
+	static final String asHex(final int aByte) {
+		return asHex(aByte, true);
 	}
 
 	/**
