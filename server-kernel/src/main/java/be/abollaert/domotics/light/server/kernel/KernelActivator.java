@@ -1,15 +1,21 @@
 package be.abollaert.domotics.light.server.kernel;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceRegistration;
 
 import be.abollaert.domotics.light.api.Driver;
+import be.abollaert.domotics.light.api.sensor.OccupancySensor;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 import be.abollaert.domotics.light.server.kernel.persistence.sqlite.SQLiteStorage;
+import be.abollaert.domotics.light.server.kernel.sensormanager.SensorManager;
 
 /**
  * Activator for the serial driver. It provides the modules on the server side.
@@ -29,6 +35,29 @@ public final class KernelActivator implements BundleActivator {
 	
 	/** The storage. */
 	private Storage storage;
+	
+	/** The bundle context. */
+	private BundleContext context;
+	
+	private final Set<SensorManager> sensorManagers = new HashSet<SensorManager>();
+	
+	/** The filter selects the http service as well as the driver. */
+	private static final String SVC_FILTER = "(objectclass=" + OccupancySensor.class.getName() + ")";
+	
+	private final ServiceListener listener = new ServiceListener() {
+		@Override
+		public final void serviceChanged(final ServiceEvent event) {
+			if (context != null) {
+				if (event.getType() == ServiceEvent.REGISTERED) {
+					final OccupancySensor sensor = (OccupancySensor)context.getService(event.getServiceReference());
+					
+					if (sensor.getName().equals("10-00-00-50-c2-36-63-1b")) {
+						sensorManagers.add(new SensorManager(sensor, driver));
+					}
+				}
+			}
+		}
+	};
 
 	/**
 	 * {@inheritDoc}
@@ -39,6 +68,7 @@ public final class KernelActivator implements BundleActivator {
 			this.storage = new SQLiteStorage();
 		}
 		
+		this.context = context;
 		this.storage.start();
 		
 		if (this.driver == null) {
@@ -56,6 +86,7 @@ public final class KernelActivator implements BundleActivator {
 		}
 		
 		this.registration = context.registerService(Driver.class.getName(), driver, null);
+		this.context.addServiceListener(this.listener, SVC_FILTER);
 	}
 
 	/**
@@ -70,6 +101,8 @@ public final class KernelActivator implements BundleActivator {
 		this.driver.unload();
 		this.registration.unregister();
 		this.storage.stop();
+		this.sensorManagers.clear();
+		this.context = null;
 	}
 
 }

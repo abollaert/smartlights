@@ -16,6 +16,8 @@
 				<include>be.abollaert.domotics.lights:server-kernel</include>
 				<include>be.abollaert.domotics.lights:tcp-server</include>
 				<include>be.abollaert.domotics.lights:upgrade-service</include>
+				<include>be.abollaert.domotics.lights:sensor-api</include>
+				<include>be.abollaert.domotics.lights:zstack-driver</include>
 			</includes>
 			
 			<binaries>
