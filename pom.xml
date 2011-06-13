@@ -24,6 +24,7 @@
 		<module>protocolbuffers</module>
 		<module>webinterface</module>
 		<module>zstack-driver</module>
+		<module>sensor-api</module>
 	</modules>
 
 	<build>
