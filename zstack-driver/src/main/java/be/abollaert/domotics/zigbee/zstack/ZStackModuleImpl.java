@@ -8,10 +8,15 @@ import gnu.io.UnsupportedCommOperationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -49,6 +54,9 @@ final class ZStackModuleImpl implements ZStackModule {
 	/** The response reader. */
 	private ResponseReader responseReader;
 	
+	/** The information table. */
+	private final DeviceInfoTable infoTable;
+	
 	/** Queue for the responses. */
 	private final BlockingQueue<ZStackFrame> responseQueue = new ArrayBlockingQueue<ZStackFrame>(1);
 	
@@ -58,16 +66,23 @@ final class ZStackModuleImpl implements ZStackModule {
 	/** For the reset, which is an asynchonous operation, we use a cyclic barrier. */
 	private final CyclicBarrier resetBarrier = new CyclicBarrier(2);
 	
+	/** The device discovery service. */
+	private ExecutorService deviceDiscoveryService;
+	
+	/** The zigbee nodes. */
+	private final Map<Integer, ZigbeeNode> nodes = new HashMap<Integer, ZigbeeNode>();
+	
 	/**
 	 * Create a new instance.
 	 */
-	ZStackModuleImpl(final String serialPort, final int baudRate) {
+	ZStackModuleImpl(final String serialPort, final int baudRate, final DeviceInfoTable infoTable) {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "ZStack module : using serial port [" + serialPort + "], baud rate [" + baudRate + "]");
 		}
 		
 		this.serialPortName = serialPort;
 		this.baudRate = baudRate;
+		this.infoTable = infoTable;
 	}
 
 	/**
@@ -92,9 +107,14 @@ final class ZStackModuleImpl implements ZStackModule {
 					this.responseReaderThread = new Thread(this.responseReader, "ZStack : Response reader");
 					this.responseReaderThread.start();
 					
+					this.deviceDiscoveryService = Executors.newSingleThreadExecutor(new ThreadFactory() {
+						@Override
+						public final Thread newThread(final Runnable r) {
+							return new Thread(r, "ZStack : Device discovery service");
+						}
+					});
+					
 					this.reset();
-					//this.configuration = new ZStackConfigurationImpl(this);
-					//this.configuration.read();
 				} catch (PortInUseException e) {
 					this.serialPort = null;
 					
@@ -126,7 +146,7 @@ final class ZStackModuleImpl implements ZStackModule {
 				final int[] frame = requestFrame.toWireFrame();
 				
 				if (logger.isLoggable(Level.INFO)) {
-					logger.log(Level.INFO, "Sending frame [" + asString(frame) + "]");
+					logger.log(Level.INFO, "Sending frame [" + ZStackUtils.asString(frame) + "]");
 				}
 				
 				for (int i = 0; i < frame.length; i++) {
@@ -182,53 +202,6 @@ final class ZStackModuleImpl implements ZStackModule {
 	 */
 	private static boolean validateFCS(final int fcs, final int[] frameData) {
  		return calculateFCS(frameData, 0, frameData.length) == fcs;
-	}
-	
-	/**
-	 * Represents the given frame as a string.
-	 * 
-	 * @param 		frame		The frame.
-	 * 	
-	 * @return		A string representation of the frame.
-	 */
-	static final String asString(final int[] frame) {
-		final StringBuilder builder = new StringBuilder();
-		
-		int i = 0;
-		
-		while (i < frame.length) {
-			builder.append("0x");
-			
-			final String currentByteString = Integer.toHexString(frame[i] & 0xFF);
-			
-			if (currentByteString.length() == 1) {
-				builder.append("0");
-			}
-			
-			builder.append(currentByteString);
-			
-			if (i < frame.length - 1) {
-				builder.append(" ");
-			}
-			
-			i++;
-		}
-		
-		return builder.toString();
-	}
-	
-	static final String toHex(final int aByte) {
-		final StringBuilder builder = new StringBuilder("0x");
-		
-		final String currentByteString = Integer.toHexString(aByte);
-		
-		if (currentByteString.length() % 2 == 1) {
-			builder.append("0");
-		}
-		
-		builder.append(currentByteString);
-		
-		return builder.toString();
 	}
 	
 	/**
@@ -336,7 +309,7 @@ final class ZStackModuleImpl implements ZStackModule {
 								
 								if (validateFCS(byteRead, frameDataCoveredByFCS)) {
 									if (logger.isLoggable(Level.INFO)) {
-										logger.log(Level.INFO, "Full frame received : API ID : [" + toHex(this.currentCommandId) + "], frame data : [" + asString(this.frameData) + "], FCS [" + toHex(byteRead) + "]");
+										logger.log(Level.INFO, "Full frame received : API ID : [" + ZStackUtils.asHex(this.currentCommandId) + "], frame data : [" + ZStackUtils.asString(this.frameData) + "], FCS [" + ZStackUtils.asHex(byteRead) + "]");
 									}
 									
 									this.processFrame();
@@ -409,29 +382,61 @@ final class ZStackModuleImpl implements ZStackModule {
 							}
 						}
 					} else if (request.getCommandID() == CommandID.AF_INCOMING_MESSAGE) {
-						if (logger.isLoggable(Level.INFO)) {
-							logger.log(Level.INFO, "Incoming message received.");
-						}
-						
 						final IncomingMessage message = new IncomingMessage(request.getPayload());
 						
 						if (logger.isLoggable(Level.INFO)) {
 							logger.log(Level.INFO, "Received an unsollicited message [" + message + "]");
 						}
+						
+						if (message.getClusterId() == ClusterID.OCCUPANCY_SENSING) {
+							final ZCLFrame zclFrame = new ZCLFrame(message.getPayload());
+							
+							if (logger.isLoggable(Level.INFO)) {
+								logger.log(Level.INFO, "Occupancy sensing frame : [" + zclFrame + "]");
+							}
+							
+							final ZigbeeNode node = nodes.get(message.getSourceAddress());
+							
+							if (node != null) {
+								node.reportAttributes(zclFrame.getPayload());
+							}
+						}
 					} else if (request.getCommandID() == CommandID.ZDO_END_DEVICE_ANNCE_IND) {
 						int i = 0;
 						
-						final int sourceAddress = (request.getPayload()[i++] << 8) + (request.getPayload()[i++] & 0xFF);
-						final int shortAddress = (request.getPayload()[i++] << 8) + (request.getPayload()[i++] & 0xFF);
+						final int sourceAddress = (request.getPayload()[i++] & 0xFF) + (request.getPayload()[i++] << 8);
+						final int shortAddress = (request.getPayload()[i++] & 0xFF) + (request.getPayload()[i++] << 8);
 						
 						final int[] ieeeAddress = new int[8];
-						System.arraycopy(request.getPayload(), i, ieeeAddress, 0, 8);
+						
+						for (int j = 0; j < 8; j++) {
+							ieeeAddress[j] = request.getPayload()[i + 7 - j];
+						}
+						
+						//System.arraycopy(request.getPayload(), i, ieeeAddress, 0, 8);
 						i+=8;
 						
 						int capabilities = request.getPayload()[i];
 						
 						if (logger.isLoggable(Level.INFO)) {
-							logger.log(Level.INFO, "New device has announced itself : short address [" + toHex(shortAddress) + "], IEEE address [" + asString(ieeeAddress) + "]");
+							logger.log(Level.INFO, "New device has announced itself : short address [" + ZStackUtils.asHex(shortAddress) + "], IEEE address [" + ZStackUtils.asString(ieeeAddress) + "]");
+						}
+						
+						final IEEEAddress address = new IEEEAddress(ieeeAddress);
+						final SensorType type = infoTable.getSensorType(address);
+						
+						if (type != null) {
+							if (logger.isLoggable(Level.INFO)) {
+								logger.log(Level.INFO, "The device is of type [" + type + "]");
+							}
+							
+							switch (type) {
+								case OCCUPANCY: {
+									nodes.put(shortAddress, new OccupancySensor(shortAddress, address, 0x01, ZStackModuleImpl.this));
+									
+									break;
+								}
+							}
 						}
 					}
 					
@@ -495,7 +500,19 @@ final class ZStackModuleImpl implements ZStackModule {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB0", 57600);
+		final DeviceInfoTable infoTable = new DeviceInfoTable();
+		infoTable.addSensor(new IEEEAddress(new int[] {
+			0x10,
+			0x00,
+			0x00,
+			0x50,
+			0xc2,
+			0x36,
+			0x63,
+			0x1b
+		}), SensorType.OCCUPANCY);
+		
+		final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB0", 57600, infoTable);
 		module.connect();
 		//module.disconnect();
 		/*String firmwareVersion = module.getFirmwareVersion();
@@ -512,6 +529,8 @@ final class ZStackModuleImpl implements ZStackModule {
 	 */
 	@Override
 	public final void disconnect() throws ZStackException {
+		this.deviceDiscoveryService.shutdownNow();
+		
 		this.responseReader.active = false;
 		
 		try {
@@ -538,7 +557,7 @@ final class ZStackModuleImpl implements ZStackModule {
 				final int[] frame = requestFrame.toWireFrame();
 				
 				if (logger.isLoggable(Level.INFO)) {
-					logger.log(Level.INFO, "Sending frame [" + asString(frame) + "]");
+					logger.log(Level.INFO, "Sending frame [" + ZStackUtils.asString(frame) + "]");
 				}
 				
 				for (int i = 0; i < frame.length; i++) {
@@ -580,5 +599,26 @@ final class ZStackModuleImpl implements ZStackModule {
 		} finally {
 			this.commandLock.unlock();
 		}
+	}
+	
+	final void sendData(final int[] destinationAddress, final int destinationEndPoint, final int sourceEndPoint, final int cluster, final int txSequenceNumber, final int[] payload) throws ZStackException {
+		final int[] frameData = new int[10 + payload.length];
+		int i = 0;
+		
+		frameData[i++] = destinationEndPoint & 0xFF;
+		frameData[i++] = (destinationEndPoint & 0xFF00) >> 8;
+		frameData[i++] = destinationEndPoint;
+		frameData[i++] = sourceEndPoint;
+		frameData[i++] = cluster & 0xFF;
+		frameData[i++] = (cluster & 0xFF00) >> 8;
+		frameData[i++] = txSequenceNumber;
+		frameData[i++] = 0x00;
+		frameData[i++] = 0x07;
+		frameData[i++] = payload.length;
+		
+		System.arraycopy(payload, 0, frameData, i, payload.length);
+		
+		final ZStackFrame request = new ZStackFrame(CommandID.AF_DATA_REQUEST, frameData);
+		final ZStackFrame response = this.sendSynchonousRequest(request);
 	}
 }

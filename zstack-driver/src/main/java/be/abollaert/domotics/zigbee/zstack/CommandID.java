@@ -19,4 +19,8 @@ final class CommandID {
 	
 	static final int ZDO_END_DEVICE_ANNCE_IND = 0x4593;
 	
+	static final int ZDO_SIMPLE_DESC_REQ = 0x2504;
+	
+	static final int AF_DATA_REQUEST = 0x2401;
+	
 }
