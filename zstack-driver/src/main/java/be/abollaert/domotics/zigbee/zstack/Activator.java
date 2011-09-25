@@ -1,5 +1,6 @@
 package be.abollaert.domotics.zigbee.zstack;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -31,13 +32,36 @@ public final class Activator implements BundleActivator, ZigbeeDeviceListener {
 				0x63,
 				0x1b
 			}), SensorType.OCCUPANCY);
+		
+		TABLE.addSensor(new IEEEAddress(new int[] {
+				0x10,
+				0x00,
+				0x00,
+				0x50,
+				0xC2,
+				0x36,
+				0x63,
+				0x3C
+		}), SensorType.OCCUPANCY);
 	}
 	
-	private final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB1", 57600, TABLE);
+	private ZStackModule module;
 	
 	private BundleContext context;
 	
 	private final Set<ServiceRegistration> registrations = new HashSet<ServiceRegistration>();
+	
+	public Activator() {
+		try {
+			this.module = new ZStackModuleImpl("/dev/ttyUSBftdi_A6003Cud", 57600, TABLE);
+		} catch (IOException e) {
+			if (logger.isLoggable(Level.SEVERE)) {
+				logger.log(Level.SEVERE, "IO error while connecting to the ZStack driver : [" + e.getMessage() + "]", e);
+			}
+			
+			this.module = null;
+		}
+	} 
 	
 	@Override
 	public final void start(final BundleContext context) throws Exception {

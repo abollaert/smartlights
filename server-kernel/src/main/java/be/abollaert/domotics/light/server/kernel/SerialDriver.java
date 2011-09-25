@@ -1,5 +1,6 @@
 package be.abollaert.domotics.light.server.kernel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,11 @@ import be.abollaert.domotics.light.server.kernel.persistence.StoredSwitchMoodEle
  */
 public final class SerialDriver extends AbstractDriver {
 
+	/** For the moment : hardcoded module IDs. FIXME : Add config option for this. */
 	private static final String[] MODULE_PORTS = new String[] {
-		
+		"/dev/ttyUSBftdi_A60048vp",
+		"/dev/ttyUSBftdi_A6004cJi",
+		"/dev/ttyUSBftdi_A6004pOf"
 	};
 	
 	/** Logger instance. */
@@ -67,11 +71,13 @@ public final class SerialDriver extends AbstractDriver {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected List<Channel> searchChannels() {
+	protected List<Channel> searchChannels() throws IOException {
 		final List<Channel> channels = new ArrayList<Channel>();
 	
 		for (final String port : MODULE_PORTS)  {
-			final Channel channel = new SerialChannel(port);
+			final File portFile = new File(port);
+			
+			final Channel channel = new SerialChannel(portFile.getCanonicalPath());
 			channels.add(channel);
 		}
 		

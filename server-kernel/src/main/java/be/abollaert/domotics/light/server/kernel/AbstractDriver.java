@@ -94,7 +94,7 @@ public abstract class AbstractDriver implements Driver {
 		
 	}
 	
-	protected abstract List<Channel> searchChannels();
+	protected abstract List<Channel> searchChannels() throws IOException;
 
 	/**
 	 * {@inheritDoc}

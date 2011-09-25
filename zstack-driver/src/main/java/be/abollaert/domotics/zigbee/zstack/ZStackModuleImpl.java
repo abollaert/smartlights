@@ -5,12 +5,12 @@ import gnu.io.PortInUseException;
 import gnu.io.SerialPort;
 import gnu.io.UnsupportedCommOperationException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -26,8 +26,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import be.abollaert.domotics.light.api.sensor.OccupancySensor;
 
 /**
  * {@link ZStackModuleImpl} is the main entry point to the Zigbee dongle.
@@ -83,12 +81,14 @@ final class ZStackModuleImpl implements ZStackModule {
 	/**
 	 * Create a new instance.
 	 */
-	ZStackModuleImpl(final String serialPort, final int baudRate, final DeviceInfoTable infoTable) {
+	ZStackModuleImpl(final String serialPort, final int baudRate, final DeviceInfoTable infoTable) throws IOException {
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "ZStack module : using serial port [" + serialPort + "], baud rate [" + baudRate + "]");
 		}
 		
-		this.serialPortName = serialPort;
+		final File portFile = new File(serialPort);
+		
+		this.serialPortName = portFile.getCanonicalPath();
 		this.baudRate = baudRate;
 		this.infoTable = infoTable;
 	}

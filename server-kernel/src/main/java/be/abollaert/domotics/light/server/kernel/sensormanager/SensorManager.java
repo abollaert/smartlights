@@ -15,28 +15,30 @@ import be.abollaert.domotics.light.api.sensor.OccupancySensorListener;
  */
 public final class SensorManager implements OccupancySensorListener {
 	
-	private static final int MODULE_ID = 40;
-	
-	private static final int CHANNEL_NUMBER = 4;
-	
 	private final OccupancySensor sensor;
 	
 	private final Driver driver;
 	
-	public SensorManager(final OccupancySensor sensor, final Driver driver) {
+	private final int channelNumber;
+	
+	private final int moduleId;
+	
+	public SensorManager(final OccupancySensor sensor, final Driver driver, final int channelNumber, final int moduleId) {
 		this.sensor = sensor;
 		this.driver = driver;
+		this.channelNumber = channelNumber;
+		this.moduleId = moduleId;
 		
 		this.sensor.addOccupancyListener(this);
 	}
 
 	@Override
 	public final void occupancyChanged(final boolean newState) {
-		final DigitalModule module = this.driver.getDigitalModuleWithID(MODULE_ID);
+		final DigitalModule module = this.driver.getDigitalModuleWithID(this.moduleId);
 		
 		if (module != null) {
 			try {
-				module.switchOutputChannel(CHANNEL_NUMBER, newState ? ChannelState.ON : ChannelState.OFF);
+				module.switchOutputChannel(this.channelNumber, newState ? ChannelState.ON : ChannelState.OFF);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
