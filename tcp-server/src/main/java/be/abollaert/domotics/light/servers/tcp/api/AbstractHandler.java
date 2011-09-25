@@ -52,6 +52,11 @@ abstract class AbstractHandler extends HttpServlet {
 					}
 				}
 			}
+
+			@Override
+			final String getContentType() {
+				return "application/octet-stream";
+			}
 		}, JSON("json") {
 			@Override
 			final void marshal(final Message message, final OutputStream stream) throws IOException {
@@ -77,6 +82,11 @@ abstract class AbstractHandler extends HttpServlet {
 					}
 				}
 			}
+
+			@Override
+			final String getContentType() {
+				return "application/json";
+			}
 		};
 		
 		private final String value;
@@ -86,6 +96,8 @@ abstract class AbstractHandler extends HttpServlet {
 		}
 		
 		abstract void marshal(final Message message, final OutputStream stream) throws IOException;
+		
+		abstract String getContentType();
 		
 		private static final Format byValue(final String value) {
 			for (final Format format : Format.values()) {
@@ -200,6 +212,8 @@ abstract class AbstractHandler extends HttpServlet {
 		}
 		
 		if (response != null) {
+			resp.addHeader("Access-Control-Allow-Origin", "*");
+			resp.setContentType(format.getContentType());
 			format.marshal(response, resp.getOutputStream());
 		}
 	}

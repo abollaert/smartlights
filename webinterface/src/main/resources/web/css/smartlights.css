@@ -1,0 +1,45 @@
+#header {
+	text-align: center;
+}
+
+#menu {
+	width: 28%;
+	float: left;
+	clear: none;
+}
+
+#menu ul {
+	list-style: none;
+	padding-left: 0px;
+}
+
+#menu ul li {
+	border : 0;
+	padding-top: 5px;
+	margin-left: 5px;
+	padding-bottom: 5px;
+	margin-right: 5px;
+	text-align: center;
+}
+
+#menu ul li a {
+	width: 100%;
+}
+
+#main {
+	width: 68%;
+	float: right;
+	clear: none;
+}
+
+#moduleTable {
+	width: 100%;
+}
+
+.tableHeader {
+	font-weight: bold;
+}
+
+#moduleTable td {
+	text-align: center;
+}

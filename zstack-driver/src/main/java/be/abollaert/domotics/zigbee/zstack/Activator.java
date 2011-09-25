@@ -33,7 +33,7 @@ public final class Activator implements BundleActivator, ZigbeeDeviceListener {
 			}), SensorType.OCCUPANCY);
 	}
 	
-	private final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB3", 57600, TABLE);
+	private final ZStackModule module = new ZStackModuleImpl("/dev/ttyUSB1", 57600, TABLE);
 	
 	private BundleContext context;
 	
