@@ -1,10 +1,7 @@
 package be.abollaert.domotics.light.server.kernel;
 
-import gnu.io.CommPortIdentifier;
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +23,10 @@ import be.abollaert.domotics.light.server.kernel.persistence.StoredSwitchMoodEle
  */
 public final class SerialDriver extends AbstractDriver {
 
+	private static final String[] MODULE_PORTS = new String[] {
+		
+	};
+	
 	/** Logger instance. */
 	private static final Logger logger = Logger.getLogger(SerialDriver.class
 			.getName());
@@ -69,19 +70,9 @@ public final class SerialDriver extends AbstractDriver {
 	protected List<Channel> searchChannels() {
 		final List<Channel> channels = new ArrayList<Channel>();
 	
-		final Enumeration<CommPortIdentifier> identifiers = CommPortIdentifier.getPortIdentifiers();
-		
-		while (identifiers.hasMoreElements()) {
-			final CommPortIdentifier identifier = identifiers.nextElement();
-			
-			if (identifier.getName().contains("ttyUSB")) {
-				if (logger.isLoggable(Level.INFO)) {
-					logger.log(Level.INFO, "Probing on [" + identifier.getName() + "]");
-				}
-				
-				final Channel channel = new SerialChannel(identifier.getName());
-				channels.add(channel);
-			}
+		for (final String port : MODULE_PORTS)  {
+			final Channel channel = new SerialChannel(port);
+			channels.add(channel);
 		}
 		
 		if (logger.isLoggable(Level.INFO)) {
