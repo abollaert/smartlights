@@ -56,6 +56,13 @@ public final class DimmerChannelsActivity extends BaseActivity {
 				if (percentageView != null) {
 					percentageView.setText(String.valueOf(percentage));
 				}
+				
+				final int seekBarViewId = 1000 * module.getId() + channelNumber;
+				final SeekBar seekBar = (SeekBar)findViewById(seekBarViewId);
+				
+				if (seekBar != null) {
+					seekBar.setProgress(percentage);
+				}
 			}
 		};
 		
