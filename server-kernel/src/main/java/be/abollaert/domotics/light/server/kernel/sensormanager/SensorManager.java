@@ -67,23 +67,27 @@ public final class SensorManager implements OccupancySensorListener {
 	public final void occupancyChanged(final boolean newState) {
 		final ChannelState state = newState? ChannelState.ON : ChannelState.OFF;
 		
-		if (state == ChannelState.OFF && this.delaySwitchOff > 0) {
-			this.switchOffTask = this.delayedExecutor.schedule(new Callable<Boolean>() {
-				@Override
-				public final Boolean call() throws Exception {
-					switchOutputChannel(state);
-					switchOffTask = null;
-					
-					return true;
-				}
-			}, this.delaySwitchOff, TimeUnit.SECONDS);
+		if (state == ChannelState.OFF && this.delaySwitchOff > 0 && this.getChannelState() == ChannelState.ON) {
+			if (this.switchOffTask == null) {
+				this.switchOffTask = this.delayedExecutor.schedule(new Callable<Boolean>() {
+					@Override
+					public final Boolean call() throws Exception {
+						switchOutputChannel(state);
+						switchOffTask = null;
+						
+						return true;
+					}
+				}, this.delaySwitchOff, TimeUnit.SECONDS);
+			}
 		} else {
 			if (state == ChannelState.ON && this.switchOffTask != null) {
 				this.switchOffTask.cancel(false);
 				this.switchOffTask = null;
 			}
 			
-			this.switchOutputChannel(state);
+			if (!(state == ChannelState.OFF && this.getChannelState() == ChannelState.OFF)) {
+				this.switchOutputChannel(state);
+			}
 		}
 	}
 	
@@ -97,5 +101,19 @@ public final class SensorManager implements OccupancySensorListener {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private final ChannelState getChannelState() {
+		final DigitalModule module = this.driver.getDigitalModuleWithID(this.moduleId);
+		
+		if (module != null) {
+			try {
+				return module.getOutputChannelState(this.channelNumber);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return ChannelState.OFF;
 	}
 }

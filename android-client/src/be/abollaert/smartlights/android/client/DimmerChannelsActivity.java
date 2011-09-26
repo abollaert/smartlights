@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import be.abollaert.domotics.light.api.ChannelState;
@@ -30,6 +31,7 @@ public final class DimmerChannelsActivity extends BaseActivity {
 		
 		this.setTitle("Smartlights : Dimmer channels");
 		
+		final ScrollView view = new ScrollView(this);
 		final LinearLayout layout = new LinearLayout(this);
 		layout.setOrientation(LinearLayout.VERTICAL);
 		layout.setPadding(15, 15, 15, 15);
@@ -92,7 +94,8 @@ public final class DimmerChannelsActivity extends BaseActivity {
 			e.printStackTrace();
 		}
 		
-		this.setContentView(layout);
+		view.addView(layout);
+		this.setContentView(view);
 	}
 	
 	
