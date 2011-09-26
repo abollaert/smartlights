@@ -52,9 +52,9 @@ public final class KernelActivator implements BundleActivator {
 					final OccupancySensor sensor = (OccupancySensor)context.getService(event.getServiceReference());
 					
 					if (sensor.getName().equals("10-00-00-50-c2-36-63-1b")) {
-						sensorManagers.add(new SensorManager(sensor, driver, 4, 40));
+						sensorManagers.add(new SensorManager(sensor, driver, 4, 40, 60));
 					} else if (sensor.getName().equals("10-00-00-50-c2-36-63-3c")) {
-						sensorManagers.add(new SensorManager(sensor, driver, 5, 2));
+						sensorManagers.add(new SensorManager(sensor, driver, 5, 2, 120));
 					}
 				}
 			}
