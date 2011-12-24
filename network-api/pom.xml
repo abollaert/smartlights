@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>be.abollaert.domotics.lights</groupId>
+		<artifactId>all</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<sqlite4java.version>0.201</sqlite4java.version>
+	</properties>
+
+	<groupId>be.abollaert.domotics.lights</groupId>
+	<artifactId>network-api</artifactId>
+	<name>Network API</name>
+	<packaging>bundle</packaging>
+
+	<description>
+		Transparent TCP server for the modules.
+	</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>be.abollaert.domotics.lights</groupId>
+			<artifactId>api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_core</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osgi</groupId>
+			<artifactId>osgi_R4_compendium</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-core</artifactId>
+			<version>1.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-servlet</artifactId>
+			<version>1.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-core-asl</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.joda</groupId>
+			<artifactId>joda-convert</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Import-Package>
+							be.abollaert.domotics.light.api,
+							org.osgi.framework,
+							org.osgi.service.http,
+							org.osgi.util.tracker,
+							javax.servlet,
+							javax.servlet.http,
+							com.sun.jersey.spi.container.servlet,
+							javax.ws.rs.core,
+							javax.ws.rs,
+							javax.xml.datatype, 
+							javax.xml.namespace, 
+							javax.xml.parsers, 
+							org.w3c.dom, 
+							org.w3c.dom.bootstrap, 
+							org.w3c.dom.ls, 
+							org.xml.sax
+						</Import-Package>
+
+						<Private-Package>be.abollaert.domotics.light.servers.rest.* </Private-Package>
+
+						<Bundle-Activator>be.abollaert.domotics.light.servers.rest.bootstrap.Activator</Bundle-Activator>
+						<Embed-Dependency>jackson-core-asl,jackson-mapper-asl,joda-time,joda-convert</Embed-Dependency>
+					</instructions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<systemProperties>
+						<property>
+							<name>java.library.path</name>
+							<value>/usr/lib/jni/</value>
+						</property>
+					</systemProperties>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

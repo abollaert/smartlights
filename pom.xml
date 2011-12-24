@@ -25,6 +25,8 @@
 		<module>webinterface</module>
 		<module>zstack-driver</module>
 		<module>sensor-api</module>
+		<module>sunrise-sunset</module>
+		<module>network-api</module>
 	</modules>
 
 	<build>

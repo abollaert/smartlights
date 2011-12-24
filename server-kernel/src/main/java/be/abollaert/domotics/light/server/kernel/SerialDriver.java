@@ -3,9 +3,14 @@ package be.abollaert.domotics.light.server.kernel;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Dictionary;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.osgi.service.cm.ConfigurationException;
+import org.osgi.service.cm.ManagedService;
 
 import be.abollaert.domotics.light.api.ChannelState;
 import be.abollaert.domotics.light.api.DigitalModule;
@@ -22,7 +27,13 @@ import be.abollaert.domotics.light.server.kernel.persistence.StoredSwitchMoodEle
  * @author alex
  *
  */
-public final class SerialDriver extends AbstractDriver {
+public final class SerialDriver extends AbstractDriver implements ManagedService {
+	
+	/** The property containing the device paths. */
+	public static final String PROPNAME_DEVICE_PATHS = "devicePaths";
+	
+	/** The PID. */
+	public static final String PID = "smartlights.serialdriver";
 
 	/** For the moment : hardcoded module IDs. FIXME : Add config option for this. */
 	private static final String[] MODULE_PORTS = new String[] {
@@ -36,10 +47,12 @@ public final class SerialDriver extends AbstractDriver {
 			.getName());
 	
 	/** The current channels for this driver. */
-	private List<Channel> channels;
+	private List<Channel> channels = new ArrayList<Channel>();
 	
 	/** The moods. */
 	private final List<Mood> moods = new ArrayList<Mood>();
+	
+	private String[] modulePorts;
 	
 	public SerialDriver(final Storage storage) {
 		super(storage);
@@ -69,12 +82,11 @@ public final class SerialDriver extends AbstractDriver {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected List<Channel> searchChannels() throws IOException {
 		final List<Channel> channels = new ArrayList<Channel>();
 	
-		for (final String port : MODULE_PORTS)  {
+		for (final String port : this.modulePorts) {
 			final File portFile = new File(port);
 			
 			final Channel channel = new SerialChannel(portFile.getCanonicalPath());
@@ -180,5 +192,46 @@ public final class SerialDriver extends AbstractDriver {
 	@Override
 	public final String getVersion() {
 		return this.getClass().getPackage().getImplementationVersion();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void updated(final Dictionary properties) throws ConfigurationException {
+		if (logger.isLoggable(Level.INFO)) {
+			logger.log(Level.INFO, "Configuration updated.");
+		}
+		
+		if (properties != null) {
+			final String devicePathsValue = (String)properties.get(PROPNAME_DEVICE_PATHS);
+			
+			if (logger.isLoggable(Level.INFO)) {
+				logger.log(Level.INFO, "Received device paths value : [" + devicePathsValue + "]");
+			}
+			
+			if (devicePathsValue != null) {
+				final String[] devicePaths = devicePathsValue.split(",");
+				
+				if (logger.isLoggable(Level.INFO)) {
+					logger.log(Level.INFO, "Using device paths [" + Arrays.toString(devicePaths) + "]");
+				}
+				
+				this.modulePorts = devicePaths;
+				
+				try {
+					this.unload();
+					this.probe();
+				} catch (IOException e) {
+					if (logger.isLoggable(Level.SEVERE)) {
+						logger.log(Level.SEVERE, "Could not restart the serial driver due to an IO error probing : [" + e.getMessage() + "]", e);
+					}
+				}
+			}
+		} else {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.log(Level.INFO, "Properties were null, configuration has not changed.");
+			}
+		}
 	}
 }
