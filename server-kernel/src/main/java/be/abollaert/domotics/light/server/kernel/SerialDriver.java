@@ -16,6 +16,9 @@ import be.abollaert.domotics.light.api.ChannelState;
 import be.abollaert.domotics.light.api.DigitalModule;
 import be.abollaert.domotics.light.api.DimmerModule;
 import be.abollaert.domotics.light.api.Mood;
+import be.abollaert.domotics.light.driver.base.AbstractDriver;
+import be.abollaert.domotics.light.driver.base.Channel;
+import be.abollaert.domotics.light.driver.base.ChannelType;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredDimMoodElement;
 import be.abollaert.domotics.light.server.kernel.persistence.StoredMoodInfo;
@@ -54,27 +57,31 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 	
 	private String[] modulePorts;
 	
+	private final Storage storage;
+	
 	public SerialDriver(final Storage storage) {
-		super(storage);
+		super();
+		
+		this.storage = storage;
 		
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "Loading moods.");
 		}
 		
-		final List<StoredMoodInfo> moods = this.getStorage().getStoredMoods();
+		final List<StoredMoodInfo> moods = this.storage.getStoredMoods();
 		
 		for (final StoredMoodInfo moodInfo : moods) {
-			this.moods.add(new MoodImpl(moodInfo.getId(), moodInfo.getName(), this, this.getStorage()));
+			this.moods.add(new MoodImpl(moodInfo.getId(), moodInfo.getName(), this, this.storage));
 		}
 		
 		for (final Mood mood : this.moods) {
-			final List<StoredSwitchMoodElement> switchElements = this.getStorage().getSwitchElementsForMood(mood.getId());
+			final List<StoredSwitchMoodElement> switchElements = this.storage.getSwitchElementsForMood(mood.getId());
 			
 			for (final StoredSwitchMoodElement storedSwitchElement : switchElements) {
 				mood.addSwitchElement(storedSwitchElement.getModuleId(), storedSwitchElement.getChannelNumber(), storedSwitchElement.getRequestedState());
 			}
 			
-			final List<StoredDimMoodElement> dimElements = this.getStorage().getDimElementsForMood(mood.getId());
+			final List<StoredDimMoodElement> dimElements = this.storage.getDimElementsForMood(mood.getId());
 			
 			for (final StoredDimMoodElement storedMoodElement : dimElements) {
 				mood.addDimElement(storedMoodElement.getModuleId(), storedMoodElement.getChannelNumber(), storedMoodElement.getTargetPercentage());
@@ -125,7 +132,7 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 	}
 	
 	public final int saveMood(final Mood mood) {
-		final StoredMoodInfo moodInfo = this.getStorage().saveMoodInformation(mood.getId(), mood.getName());
+		final StoredMoodInfo moodInfo = this.storage.saveMoodInformation(mood.getId(), mood.getName());
 		
 		if (mood.getId() == -1) {
 			mood.setId(moodInfo.getId());
@@ -154,7 +161,7 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 		final Mood matchingMood = this.getMoodWithID(id);
 		
 		if (matchingMood != null) {
-			this.getStorage().removeMood(id);
+			this.storage.removeMood(id);
 			this.moods.remove(matchingMood);
 		}
 	}
@@ -163,7 +170,7 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 	 * {@inheritDoc}
 	 */
 	public final Mood getNewMood(final String name) {
-		final Mood newMood = new MoodImpl(-1, name, this, this.getStorage());
+		final Mood newMood = new MoodImpl(-1, name, this, this.storage);
 		this.moods.add(newMood);
 		return newMood;
 	}
@@ -231,6 +238,46 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 		} else {
 			if (logger.isLoggable(Level.INFO)) {
 				logger.log(Level.INFO, "Properties were null, configuration has not changed.");
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void probe() throws IOException {
+		for (final Channel channel : this.searchChannels()) {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.log(Level.INFO, "Connecting to channel [" + channel.getName() + "]");
+			}
+			
+			channel.connect();
+			
+			final ChannelType channelType = channel.probeType();
+			
+			if (channelType != null) {
+				if (channelType == ChannelType.DIGITAL) {
+					final DigitalModule module = new ModuleImpl(channel, channelType, this.storage);
+					this.addDigitalModule(module);
+					
+					if (logger.isLoggable(Level.INFO)) {
+						logger.log(Level.INFO, "Digital Module on [" + channel.getName() + "], ID [" + module.getId() + "]");
+					}
+				} else {
+					final DimmerModule module = new ModuleImpl(channel, channelType, this.storage);
+					this.addDimmerModule(module);
+					
+					if (logger.isLoggable(Level.INFO)) {
+						logger.log(Level.INFO, "Dimmer Module on [" + channel.getName() + "], ID [" + module.getId() + "]");
+					}
+				}
+			} else {
+				if (logger.isLoggable(Level.INFO)) {
+					logger.log(Level.INFO, "Could not detect module on port [" + channel.getName() + "]");
+				}
+				
+				channel.disconnect();
 			}
 		}
 	}

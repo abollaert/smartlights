@@ -21,8 +21,11 @@ import be.abollaert.domotics.light.api.DimmerModule;
 import be.abollaert.domotics.light.api.DimmerModuleConfiguration;
 import be.abollaert.domotics.light.api.DimmerModuleConfigurationChangedListener;
 import be.abollaert.domotics.light.api.SwitchEvent;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.RequestPDU;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.ResponsePDU;
+import be.abollaert.domotics.light.driver.base.Channel;
+import be.abollaert.domotics.light.driver.base.ChannelType;
+import be.abollaert.domotics.light.driver.base.CommunicationChannelEventListener;
+import be.abollaert.domotics.light.driver.base.RequestPDU;
+import be.abollaert.domotics.light.driver.base.ResponsePDU;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 
 

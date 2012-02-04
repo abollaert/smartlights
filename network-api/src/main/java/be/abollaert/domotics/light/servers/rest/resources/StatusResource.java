@@ -10,6 +10,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import be.abollaert.domotics.light.api.Driver;
 import be.abollaert.domotics.light.servers.rest.model.SystemStatus;
 
 /**
@@ -19,11 +20,15 @@ import be.abollaert.domotics.light.servers.rest.model.SystemStatus;
  */
 @Path("/status")
 @Produces("application/json")
-public final class StatusResource {
+public final class StatusResource extends AbstractResource {
 
+	public StatusResource(final Driver driver) {
+		super(driver);
+	}
+	
 	@GET
 	public final String getStatus() {
-		final SystemStatus status = new SystemStatus("1.2.3");
+		final SystemStatus status = new SystemStatus(this.getDriver());
 		
 		try {
 			final ObjectMapper mapper = new ObjectMapper();

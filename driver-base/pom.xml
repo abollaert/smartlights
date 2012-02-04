@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>all</artifactId>
+		<groupId>be.abollaert.domotics.lights</groupId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>be.abollaert.domotics.lights</groupId>
+	<artifactId>driver-base</artifactId>
+	<packaging>bundle</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>lights-server-kernel</Bundle-SymbolicName>
+						<Private-Package>be.abollaert.domotics.light.server.kernel.*</Private-Package>
+						<Embed-Dependency>sqlite4java</Embed-Dependency>
+						<Bundle-Activator>be.abollaert.domotics.light.server.kernel.KernelActivator</Bundle-Activator>
+						<Import-Package>be.abollaert.domotics.light.api,org.osgi.framework,gnu.io.*,be.abollaert.domotics.light.api.sensor,org.osgi.service.cm</Import-Package>
+						<Implementation-Title>Smartlights Kernel</Implementation-Title>
+						<Implementation-Version>${pom.version}</Implementation-Version>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>be.abollaert.domotics.lights</groupId>
+			<artifactId>api</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>

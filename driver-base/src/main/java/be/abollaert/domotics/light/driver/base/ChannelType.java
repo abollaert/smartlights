@@ -1,4 +1,4 @@
-package be.abollaert.domotics.light.server.kernel;
+package be.abollaert.domotics.light.driver.base;
 
 /** The type of serial channel. */
 public enum ChannelType {

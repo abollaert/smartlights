@@ -1,11 +1,8 @@
-package be.abollaert.domotics.light.server.kernel;
+package be.abollaert.domotics.light.driver.base;
 
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.RequestPDU;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.ResponsePDU;
 
 /**
  * Channel interface.

@@ -17,8 +17,11 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.RequestPDU;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.ResponsePDU;
+import be.abollaert.domotics.light.driver.base.Channel;
+import be.abollaert.domotics.light.driver.base.ChannelType;
+import be.abollaert.domotics.light.driver.base.CommunicationChannelEventListener;
+import be.abollaert.domotics.light.driver.base.RequestPDU;
+import be.abollaert.domotics.light.driver.base.ResponsePDU;
 
 public abstract class AbstractChannel implements Channel {
 	
@@ -278,7 +281,7 @@ public abstract class AbstractChannel implements Channel {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final ResponsePDU sendCommand(final be.abollaert.domotics.light.server.kernel.ProtocolParser.RequestPDU command) throws IOException {
+	public final ResponsePDU sendCommand(final be.abollaert.domotics.light.driver.base.RequestPDU command) throws IOException {
 		this.commandLock.lock();
 		this.responseQueue.clear();
 		

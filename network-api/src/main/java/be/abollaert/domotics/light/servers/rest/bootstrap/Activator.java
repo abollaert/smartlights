@@ -1,7 +1,5 @@
 package be.abollaert.domotics.light.servers.rest.bootstrap;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,19 +82,46 @@ public final class Activator implements BundleActivator {
 		
 		this.httpServiceTracker.open();
 		
+		this.kernelServiceTracker = new ServiceTracker(this.context, Driver.class.getName(), null) {
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public final Object addingService(final ServiceReference reference) {
+				driver = (Driver)context.getService(reference);
+				environmentUpdated();
+				
+				return super.addingService(reference);
+			}
+
+			/**
+			 * {@inheritDoc}
+			 */
+			@Override
+			public final void removedService(final ServiceReference reference, final Object service) {
+				environmentUpdated();
+				driver = null;
+				
+				super.removedService(reference, service);
+			}
+		};
+		
+		this.kernelServiceTracker.open();
+		
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "REST API bundle started.");
 		}
 	}
 	
 	private final void environmentUpdated() {
-		if (this.httpService != null) {
+		if (this.httpService != null && this.driver != null) {
 			if (logger.isLoggable(Level.INFO)) {
 				logger.log(Level.INFO, "Starting REST API.");
 			}
 
 	        try {
-	        	httpService.registerServlet("/smartlights-api", new ServletContainer(), getJerseyServletParams(), null);
+	        	final RestAPI restApplication = new RestAPI(this.driver);
+	        	httpService.registerServlet("/smartlights-api", new ServletContainer(restApplication), null, null);
 	        	
 	        	if (logger.isLoggable(Level.INFO)) {
 					logger.log(Level.INFO, "REST API started.");
@@ -113,11 +138,11 @@ public final class Activator implements BundleActivator {
 				}
 	        }
 		} else {
-			if (logger.isLoggable(Level.INFO)) {
-				logger.log(Level.INFO, "Stopping REST API.");
-			}
-			
 			if (registered) {
+				if (logger.isLoggable(Level.INFO)) {
+					logger.log(Level.INFO, "Stopping REST API.");
+				}
+				
 				httpService.unregister("/smartlights-api");
 			}
 		}
@@ -132,24 +157,20 @@ public final class Activator implements BundleActivator {
 			logger.log(Level.INFO, "Stopping REST API bundle.");
 		}
 		
+		this.httpServiceTracker.close();
+		this.kernelServiceTracker.close();
+		
+		this.httpServiceTracker = null;
+		this.kernelServiceTracker = null;
+		
+		if (this.registered) {
+			httpService.unregister("/smartlights-api");
+		}
+		
 		this.context = null;
 		
 		if (logger.isLoggable(Level.INFO)) {
 			logger.log(Level.INFO, "REST API bundle stopped.");
 		}
 	}
-	
-	/**
-	 * Get the parameters needed to run the application.
-	 * 
-	 * @return	The parameters needed to run the application.
-	 */
-    private final Dictionary<String, String> getJerseyServletParams() {
-        final Dictionary<String, String> jerseyServletParams = new Hashtable<String, String>();
-        
-        jerseyServletParams.put("javax.ws.rs.Application", RestAPI.class.getName());
-        jerseyServletParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
-        
-        return jerseyServletParams;
-    }
 }

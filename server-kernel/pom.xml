@@ -14,7 +14,6 @@
 		<sqlite4java.version>0.201</sqlite4java.version>
 	</properties>
 
-	<groupId>be.abollaert.domotics.lights</groupId>
 	<artifactId>server-kernel</artifactId>
 	<name>Server side kernel</name>
 	<packaging>bundle</packaging>
@@ -66,6 +65,11 @@
 		<dependency>
 			<groupId>be.abollaert.domotics.lights</groupId>
 			<artifactId>sensor-api</artifactId>
+			<version>${pom.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>be.abollaert.domotics.lights</groupId>
+			<artifactId>driver-base</artifactId>
 			<version>${pom.version}</version>
 		</dependency>
 	</dependencies>

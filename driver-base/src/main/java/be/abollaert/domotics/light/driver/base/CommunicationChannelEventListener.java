@@ -1,7 +1,4 @@
-package be.abollaert.domotics.light.server.kernel;
-
-
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.ResponsePDU;
+package be.abollaert.domotics.light.driver.base;
 
 /**
  * Attached to the communication channel. Notifies all events.

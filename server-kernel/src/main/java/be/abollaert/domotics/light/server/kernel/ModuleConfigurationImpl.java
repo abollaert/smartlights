@@ -9,8 +9,9 @@ import be.abollaert.domotics.light.api.DigitalInputChannelConfiguration;
 import be.abollaert.domotics.light.api.DigitalModuleConfiguration;
 import be.abollaert.domotics.light.api.DimmerInputChannelConfiguration;
 import be.abollaert.domotics.light.api.DimmerModuleConfiguration;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.RequestPDU;
-import be.abollaert.domotics.light.server.kernel.ProtocolParser.ResponsePDU;
+import be.abollaert.domotics.light.driver.base.Channel;
+import be.abollaert.domotics.light.driver.base.RequestPDU;
+import be.abollaert.domotics.light.driver.base.ResponsePDU;
 import be.abollaert.domotics.light.server.kernel.persistence.Storage;
 
 /**
