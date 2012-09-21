@@ -7,14 +7,16 @@
     <groupId>be.abollaert.domotics.lights</groupId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
+  
   <groupId>be.abollaert.domotics.lights</groupId>
   <artifactId>simulated-driver</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  
   <name>simulated-driver</name>
-  <url>http://maven.apache.org</url>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -27,5 +29,31 @@
     	<artifactId>api</artifactId>
     	<version>0.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+    	<groupId>be.abollaert.domotics.lights</groupId>
+    	<artifactId>driver-base</artifactId>
+    	<version>${pom.version}</version>
+    </dependency>
   </dependencies>
+  
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>driver-base</Bundle-SymbolicName>
+						
+						<Export-Package>be.abollaert.domotics.light.driver.base</Export-Package>
+						
+						<Import-Package>
+							be.abollaert.domotics.light.api
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

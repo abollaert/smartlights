@@ -10,6 +10,7 @@
 	<groupId>be.abollaert.domotics.lights</groupId>
 	<artifactId>driver-base</artifactId>
 	<packaging>bundle</packaging>
+	<name>Smartlights : [Driver Base Implementation]</name>
 
 	<build>
 		<plugins>
@@ -19,13 +20,13 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>lights-server-kernel</Bundle-SymbolicName>
-						<Private-Package>be.abollaert.domotics.light.server.kernel.*</Private-Package>
-						<Embed-Dependency>sqlite4java</Embed-Dependency>
-						<Bundle-Activator>be.abollaert.domotics.light.server.kernel.KernelActivator</Bundle-Activator>
-						<Import-Package>be.abollaert.domotics.light.api,org.osgi.framework,gnu.io.*,be.abollaert.domotics.light.api.sensor,org.osgi.service.cm</Import-Package>
-						<Implementation-Title>Smartlights Kernel</Implementation-Title>
-						<Implementation-Version>${pom.version}</Implementation-Version>
+						<Bundle-SymbolicName>driver-base</Bundle-SymbolicName>
+						
+						<Export-Package>be.abollaert.domotics.light.driver.base</Export-Package>
+						
+						<Import-Package>
+							be.abollaert.domotics.light.api
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

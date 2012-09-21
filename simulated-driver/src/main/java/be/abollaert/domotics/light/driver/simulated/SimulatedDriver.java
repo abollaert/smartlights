@@ -5,7 +5,6 @@ import java.util.List;
 
 import be.abollaert.domotics.light.api.Mood;
 import be.abollaert.domotics.light.driver.base.AbstractDriver;
-import be.abollaert.domotics.light.driver.base.Channel;
 
 public final class SimulatedDriver extends AbstractDriver {
 
@@ -56,11 +55,4 @@ public final class SimulatedDriver extends AbstractDriver {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	protected List<Channel> searchChannels() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

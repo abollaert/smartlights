@@ -51,8 +51,6 @@ public abstract class AbstractDriver implements Driver {
 	 */
 	@Override
 	public abstract void probe() throws IOException;
-	
-	protected abstract List<Channel> searchChannels() throws IOException;
 
 	/**
 	 * {@inheritDoc}

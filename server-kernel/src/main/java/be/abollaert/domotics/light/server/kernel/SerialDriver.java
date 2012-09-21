@@ -89,8 +89,7 @@ public final class SerialDriver extends AbstractDriver implements ManagedService
 		}
 	}
 	
-	@Override
-	protected List<Channel> searchChannels() throws IOException {
+	private final List<Channel> searchChannels() throws IOException {
 		final List<Channel> channels = new ArrayList<Channel>();
 	
 		for (final String port : this.modulePorts) {

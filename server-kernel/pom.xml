@@ -86,9 +86,14 @@
 						<Private-Package>be.abollaert.domotics.light.server.kernel.*</Private-Package>
 						<Embed-Dependency>sqlite4java</Embed-Dependency>
 						<Bundle-Activator>be.abollaert.domotics.light.server.kernel.KernelActivator</Bundle-Activator>
-						<Import-Package>be.abollaert.domotics.light.api,org.osgi.framework,gnu.io.*,be.abollaert.domotics.light.api.sensor,org.osgi.service.cm</Import-Package>
-						<Implementation-Title>Smartlights Kernel</Implementation-Title> 
-                        <Implementation-Version>${pom.version}</Implementation-Version> 
+						<Import-Package>
+							be.abollaert.domotics.light.api,
+							org.osgi.framework,
+							gnu.io.*,
+							be.abollaert.domotics.light.api.sensor,
+							org.osgi.service.cm,
+							be.abollaert.domotics.light.driver.base
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

@@ -11,7 +11,7 @@
 	<name>Domotics lights applications</name>
 
 	<properties>
-		<protocolbuffers.version>2.3.0</protocolbuffers.version>
+		<protocolbuffers.version>2.4.1</protocolbuffers.version>
 	</properties>
 
 	<modules>
@@ -29,6 +29,7 @@
 		<module>network-api</module>
 		<module>simulated-driver</module>
 		<module>driver-base</module>
+		<module>storage</module>
 	</modules>
 
 	<build>
